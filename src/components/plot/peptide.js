@@ -9,24 +9,48 @@ import { interpolateRdYlGn } from 'd3-scale-chromatic';
 
 class Peptide extends Component {
 
+    defaultRectHeight = 1;
+    selRectHeight = 3;
+
+    constructor(props){
+        super(props)
+
+        this.state = {
+            yShift: 0,
+            rectHeight: this.defaultRectHeight,
+            rectBorder: 'none'
+        }
+    }
+
     mouseOverPep = (e) => {
         console.log(e.target)
         console.log('on Mouse Over')
+        this.setState({ yShift :this.selRectHeight/2, rectHeight: this.selRectHeight, rectBorder: 'black' });
+    }
+
+    mousOutPep = () => {
+        this.setState({ yShift :0, rectHeight: this.defaultRectHeight, rectBorder: 'none'});
     }
 
     render() {
         const {xScale, yScale, colorScale, pepInfo} = this.props;
 
+        const xStart = xScale(pepInfo.startPos);
+        const xEnd = xScale(pepInfo.endPos);
+        const y = yScale(pepInfo.molWeight);
+
         return (
-            <line
+            <rect
                 className="psm"
                 id={pepInfo.id}
-                x1={xScale(pepInfo.startPos)}
-                y1={yScale(pepInfo.molWeight)}
-                x2={xScale(pepInfo.endPos)}
-                y2={yScale(pepInfo.molWeight)}
-                stroke={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
+                x={xStart}
+                y={y-this.state.yShift}
+                width={xEnd-xStart}
+                height={this.state.rectHeight}
+                stroke={this.state.rectBorder}
+                fill={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
                 onMouseOver={this.mouseOverPep}
+                onMouseOut={this.mousOutPep}
             />
         )
 

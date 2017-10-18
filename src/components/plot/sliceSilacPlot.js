@@ -89,7 +89,7 @@ class SliceSilacPlot extends Component {
         }
 
         return (
-            <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
+            <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
                 <g ref={r => this.mainG = select(r)} onDoubleClick={this.zoomOut}>
                     {pepGenerator(protein)}
                 </g>

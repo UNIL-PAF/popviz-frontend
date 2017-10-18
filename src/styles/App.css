@@ -27,11 +27,11 @@
   to { transform: rotate(360deg); }
 }
 
-
-.psm {
-  stroke-width: 1;
+.slice-silac-svg {
+  background-color: #BEBEBE;
 }
 
-.psm:hover {
-  stroke-width: 3;
+.psm {
+  stroke-width: 0.5;
+  fill-opacity: 0.9;
 }
