@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
+import { interpolateRdYlGn } from 'd3-scale-chromatic';
 
 class Peptide extends Component {
 
@@ -14,16 +15,17 @@ class Peptide extends Component {
     }
 
     render() {
-        const {xScale, yScale, pepInfo} = this.props;
+        const {xScale, yScale, colorScale, pepInfo} = this.props;
 
         return (
             <line
+                className="psm"
+                id={pepInfo.id}
                 x1={xScale(pepInfo.startPos)}
                 y1={yScale(pepInfo.molWeight)}
                 x2={xScale(pepInfo.endPos)}
                 y2={yScale(pepInfo.molWeight)}
-                stroke="blue"
-                strokeWidth="1"
+                stroke={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
                 onMouseOver={this.mouseOverPep}
             />
         )
@@ -36,6 +38,7 @@ Peptide.propTypes = {
     zoomRight: PropTypes.number,
     xScale: PropTypes.func.isRequired,
     yScale: PropTypes.func.isRequired,
+    colorScale: PropTypes.func.isRequired,
     actions: PropTypes.object.isRequired,
     pepInfo: PropTypes.object.isRequired
 };

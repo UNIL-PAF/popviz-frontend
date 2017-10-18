@@ -18,7 +18,8 @@ class SliceSilacPlot extends Component {
 
         this.state = {
             xScale: scaleLinear().range([0, this.props.width]),
-            yScale: scaleLinear().range([this.props.height, 0])
+            yScale: scaleLinear().range([this.props.height, 0]),
+            colorScale: scaleLinear().domain([2,-2]).range([0,1])
         }
     }
 
@@ -79,6 +80,7 @@ class SliceSilacPlot extends Component {
                         zoomRight={thisZoomRight}
                         xScale={this.state.xScale}
                         yScale={this.state.yScale}
+                        colorScale={this.state.colorScale}
                         pepInfo={p}
                         key={i}
                     />
