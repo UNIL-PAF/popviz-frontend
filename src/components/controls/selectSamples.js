@@ -49,7 +49,7 @@ SelectSamples.propTypes = {
 
 function mapStateToProps(state) {
     const props = {
-        sampleSelection: state.controlReducer.sampleSelection
+        sampleSelection: state.plotReducer.sampleSelection
     };
 
     return props;

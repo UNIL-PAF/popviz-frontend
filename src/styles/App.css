@@ -35,3 +35,25 @@
   stroke-width: 0.5;
   fill-opacity: 0.9;
 }
+
+peptide-pop-over.shadow {
+  fill:black
+}
+
+.peptide-pop-over {
+  rx:5;
+  ry:5;
+  fill: white;
+  fill-opacity: 0.9;
+  stroke: black;
+  stroke-width: 0.5;
+}
+
+.peptide-pop-over-title {
+  font-weight:normal;
+}
+
+.peptide-pop-over-value {
+  font-weight:bold;
+}
+

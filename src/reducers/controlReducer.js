@@ -2,20 +2,7 @@ import { LOAD_PROTEIN, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION } from '../act
 
 const defaultState = {
     proteinAC: 'P02786',
-    isLoading: false,
-    protein: null,
-    sampleSelection: [
-        {sampleName: '8967', selected: false},
-        {sampleName: '9052', selected: false},
-        {sampleName: '9053', selected: false},
-        {sampleName: '8968', selected: false},
-        {sampleName: '9508', selected: false},
-        {sampleName: '9062', selected: true},
-        {sampleName: '9063', selected: true},
-        {sampleName: '9064', selected: true},
-        {sampleName: '8987', selected: false},
-        {sampleName: '9507', selected: false}
-    ]
+    isLoading: false
 };
 
 export default function reduceControlActions(state = defaultState, action = null) {
@@ -29,7 +16,6 @@ export default function reduceControlActions(state = defaultState, action = null
       case PROTEIN_IS_LOADED:
           return{
               ...state,
-              protein: action.protein,
               isLoading: false
           }
       case CHANGE_SAMPLE_SELECTION:

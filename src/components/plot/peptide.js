@@ -19,23 +19,13 @@ class Peptide extends Component {
     }
 
     mouseEnterPep = (e) => {
-        console.log(e.target)
-        console.log('on Mouse Over')
-
-        this.props.actions.mouseOverPep(e.target.id)
-        //}
-
-        // this.setState({
-        //     yShift :this.selRectHeight/2,
-        //     rectHeight: this.selRectHeight,
-        //     rectBorder: 'black',
-        //     mouseIsOver: true
-        // });
+        const bBox = e.target.getBBox()
+        console.log(e.clientX)
+        this.props.actions.mouseOverPep(e.target.id, bBox.x, bBox.y)
     }
 
     mouseOutPep = () => {
-        console.log('mouse out')
-        this.props.actions.mouseOverPep(null)
+        this.props.actions.mouseOverPep(undefined)
 
         this.setState({
             yShift :0,

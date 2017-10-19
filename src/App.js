@@ -7,6 +7,8 @@ import SliceSilacPlot from './components/plot/sliceSilacPlot'
 
 class App extends Component {
   render() {
+      const p = {id:'hihi'}
+
     return (
       <div className="AppControls">
           <LoadProteinInputs/>

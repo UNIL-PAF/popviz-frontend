@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
 import Peptide from './peptide'
+import PeptidePopOver from './peptidePopOver'
 
 class SliceSilacPlot extends Component {
 
@@ -23,13 +24,7 @@ class SliceSilacPlot extends Component {
         }
     }
 
-    mouseOverPep = (e) => {
-        console.log(e.target)
-        console.log('on Mouse Over')
-    }
-
     brushend = () => {
-        console.log('brushend')
         var s = d3.event.selection;
         if(s){
             const newDomain = s.map(this.state.xScale.invert, this.state.xScale);
@@ -50,57 +45,60 @@ class SliceSilacPlot extends Component {
     }
 
     render() {
-        const {width, height, zoomLeft, zoomRight, protein, sampleSelection, mouseOverPepId} = this.props;
-
-        // create the peptides
-        const pepGenerator = (protein, mouseOverPepId) => {
-            if(protein) {
-                const thisZoomLeft = (zoomLeft == null) ? 1 : zoomLeft;
-                const thisZoomRight = (zoomRight == null) ? protein.sequenceLength : zoomRight;
-
-                this.state.xScale.domain([thisZoomLeft,thisZoomRight]);
-                this.state.yScale.domain([protein.minMolWeight, protein.maxMolWeight]);
-
-                // render only peptides within the zoom range
-                const filteredPeps = protein.peptides.filter( (p) => {
-                    return p.startPos <= thisZoomRight && p.endPos >= thisZoomLeft;
-                });
-
-                // create array of selected samples
-                const selectedSamples = sampleSelection.filter( (ss) => {return ss.selected;}).map( (ss) => {return ss.sampleName})
-                const nrSelectedSamples = selectedSamples.length
-
-                // render only peptides from selected samples
-                const selectedPeps = filteredPeps.filter( (p) => {
-                    return selectedSamples.indexOf(p.sampleName) >= 0;
-                });
+        const {width, height, zoomLeft, zoomRight, protein, filteredPepList, mouseOverPepId, mouseOverPepInfo, mouseOverPepPos, sampleSelection} = this.props;
 
 
-                const pepList = selectedPeps.map((p,i) => {
-                    return <Peptide
-                        zoomLeft={thisZoomLeft}
-                        zoomRight={thisZoomRight}
-                        xScale={this.state.xScale}
-                        yScale={this.state.yScale}
-                        colorScale={this.state.colorScale}
-                        pepInfo={p}
-                        mouseIsOver={p.id === mouseOverPepId}
-                        samplePos={selectedSamples.indexOf(p.sampleName)}
-                        nrSamples={nrSelectedSamples}
-                        key={i}
-                    />
-                })
+        // create the array containing the peptide plot elements
+        const plotPeptides = (selectedPeps, thisZoomLeft, thisZoomRight, selectedSamples) => {
+            const nrSelectedSamples = selectedSamples.length
 
-                return pepList;
-            }
+            return selectedPeps.map((p,i) => {
+                return <Peptide
+                    zoomLeft={thisZoomLeft}
+                    zoomRight={thisZoomRight}
+                    xScale={this.state.xScale}
+                    yScale={this.state.yScale}
+                    colorScale={this.state.colorScale}
+                    pepInfo={p}
+                    mouseIsOver={p.id === mouseOverPepId}
+                    samplePos={selectedSamples.indexOf(p.sampleName)}
+                    nrSamples={nrSelectedSamples}
+                    key={i}
+                />
+            })
         }
 
-        return (
+        // create the plot area
+        const plotContentGenerator = (protein) => {
+            const thisZoomLeft = (zoomLeft === undefined) ? 1 : zoomLeft;
+            const thisZoomRight = (zoomRight === undefined) ? protein.sequenceLength : zoomRight;
+
+            this.state.xScale.domain([thisZoomLeft, thisZoomRight]);
+            this.state.yScale.domain([protein.minMolWeight, protein.maxMolWeight]);
+
+            // create array of selected samples
+            const selectedSamples = sampleSelection.filter((ss) => {
+                return ss.selected;
+            }).map((ss) => {
+                return ss.sampleName
+            })
+
+            // construct and concat the different elements of the plot
+            const pepPlotList = plotPeptides(filteredPepList, thisZoomLeft, thisZoomRight, selectedSamples)
+
+            return pepPlotList
+        }
+
+
+            return (
+            <div>
             <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
                 <g ref={r => this.mainG = select(r)} onDoubleClick={this.zoomOut}>
-                    {pepGenerator(protein, mouseOverPepId)}
+                    { protein && plotContentGenerator(protein) }
                 </g>
+                {mouseOverPepInfo && <PeptidePopOver mouseOverPepInfo={mouseOverPepInfo} mouseOverPepPos={mouseOverPepPos}/>}
             </svg>
+            </div>
         )
 
     }
@@ -114,19 +112,23 @@ SliceSilacPlot.propTypes = {
     height: PropTypes.number.isRequired,
     protein: PropTypes.object,
     sampleSelection: PropTypes.array.isRequired,
-    mouseOverPepId: PropTypes.string
+    mouseOverPepId: PropTypes.string,
+    mouseOverPepInfo: PropTypes.object,
+    mouseOverPepPos: PropTypes.array,
+    filteredPepList: PropTypes.array
 };
 
 function mapStateToProps(state) {
     const props = {
         zoomLeft: state.plotReducer.zoomLeft,
         zoomRight: state.plotReducer.zoomRight,
-        protein: state.controlReducer.protein,
-        sampleSelection: state.controlReducer.sampleSelection,
-        mouseOverPepId: state.plotReducer.mouseOverPepId
+        protein: state.plotReducer.protein,
+        sampleSelection: state.plotReducer.sampleSelection,
+        mouseOverPepId: state.plotReducer.mouseOverPepId,
+        mouseOverPepInfo: state.plotReducer.mouseOverPepInfo,
+        mouseOverPepPos: state.plotReducer.mouseOverPepPos,
+        filteredPepList: state.plotReducer.filteredPepList
     };
-
-    console.log(props)
 
     return props;
 }
