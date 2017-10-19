@@ -50,10 +50,10 @@ class SliceSilacPlot extends Component {
     }
 
     render() {
-        const {width, height, zoomLeft, zoomRight, protein, sampleSelection} = this.props;
+        const {width, height, zoomLeft, zoomRight, protein, sampleSelection, mouseOverPepId} = this.props;
 
         // create the peptides
-        const pepGenerator = (protein) => {
+        const pepGenerator = (protein, mouseOverPepId) => {
             if(protein) {
                 const thisZoomLeft = (zoomLeft == null) ? 1 : zoomLeft;
                 const thisZoomRight = (zoomRight == null) ? protein.sequenceLength : zoomRight;
@@ -68,13 +68,15 @@ class SliceSilacPlot extends Component {
 
                 // create array of selected samples
                 const selectedSamples = sampleSelection.filter( (ss) => {return ss.selected;}).map( (ss) => {return ss.sampleName})
+                const nrSelectedSamples = selectedSamples.length
 
-                // render only selected samples
+                // render only peptides from selected samples
                 const selectedPeps = filteredPeps.filter( (p) => {
                     return selectedSamples.indexOf(p.sampleName) >= 0;
                 });
 
-                return selectedPeps.map((p,i) => {
+
+                const pepList = selectedPeps.map((p,i) => {
                     return <Peptide
                         zoomLeft={thisZoomLeft}
                         zoomRight={thisZoomRight}
@@ -82,16 +84,21 @@ class SliceSilacPlot extends Component {
                         yScale={this.state.yScale}
                         colorScale={this.state.colorScale}
                         pepInfo={p}
+                        mouseIsOver={p.id === mouseOverPepId}
+                        samplePos={selectedSamples.indexOf(p.sampleName)}
+                        nrSamples={nrSelectedSamples}
                         key={i}
                     />
                 })
+
+                return pepList;
             }
         }
 
         return (
             <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
                 <g ref={r => this.mainG = select(r)} onDoubleClick={this.zoomOut}>
-                    {pepGenerator(protein)}
+                    {pepGenerator(protein, mouseOverPepId)}
                 </g>
             </svg>
         )
@@ -106,7 +113,8 @@ SliceSilacPlot.propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     protein: PropTypes.object,
-    sampleSelection: PropTypes.array.isRequired
+    sampleSelection: PropTypes.array.isRequired,
+    mouseOverPepId: PropTypes.string
 };
 
 function mapStateToProps(state) {
@@ -114,8 +122,11 @@ function mapStateToProps(state) {
         zoomLeft: state.plotReducer.zoomLeft,
         zoomRight: state.plotReducer.zoomRight,
         protein: state.controlReducer.protein,
-        sampleSelection: state.controlReducer.sampleSelection
+        sampleSelection: state.controlReducer.sampleSelection,
+        mouseOverPepId: state.plotReducer.mouseOverPepId
     };
+
+    console.log(props)
 
     return props;
 }

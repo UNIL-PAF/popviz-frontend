@@ -23,3 +23,8 @@ export function changeSampleSelection(sampleSelection){
 export function changeZoomRange(zoomLeft, zoomRight) {
     return { type: types.CHANGE_ZOOM_RANGE, zoomLeft: zoomLeft, zoomRight: zoomRight }
 }
+
+export function mouseOverPep(id) {
+    return { type: types.MOUSE_OVER_PEP, id: id }
+}
+

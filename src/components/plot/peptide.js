@@ -15,42 +15,73 @@ class Peptide extends Component {
     constructor(props){
         super(props)
 
-        this.state = {
-            yShift: 0,
-            rectHeight: this.defaultRectHeight,
-            rectBorder: 'none'
-        }
+        this.state = this.setDefaultRect(props);
     }
 
-    mouseOverPep = (e) => {
+    mouseEnterPep = (e) => {
         console.log(e.target)
         console.log('on Mouse Over')
-        this.setState({ yShift :this.selRectHeight/2, rectHeight: this.selRectHeight, rectBorder: 'black' });
+
+        this.props.actions.mouseOverPep(e.target.id)
+        //}
+
+        // this.setState({
+        //     yShift :this.selRectHeight/2,
+        //     rectHeight: this.selRectHeight,
+        //     rectBorder: 'black',
+        //     mouseIsOver: true
+        // });
     }
 
-    mousOutPep = () => {
-        this.setState({ yShift :0, rectHeight: this.defaultRectHeight, rectBorder: 'none'});
+    mouseOutPep = () => {
+        console.log('mouse out')
+        this.props.actions.mouseOverPep(null)
+
+        this.setState({
+            yShift :0,
+            rectHeight: this.defaultRectHeight,
+            rectBorder: 'none',
+        });
+        const stateObj = this.setDefaultRect(this.props)
+        this.setState(stateObj);
+    }
+
+    setDefaultRect = (props) => {
+        return {
+            yShift: 0,
+            rectHeight: this.defaultRectHeight,
+            rectBorder: 'none',
+            mouseIsOver: false
+        };
     }
 
     render() {
-        const {xScale, yScale, colorScale, pepInfo} = this.props;
+        const {yScale, xScale, colorScale, pepInfo, nrSamples, samplePos, mouseIsOver} = this.props;
 
+        const y = yScale(pepInfo.molWeight);
         const xStart = xScale(pepInfo.startPos);
         const xEnd = xScale(pepInfo.endPos);
-        const y = yScale(pepInfo.molWeight);
+        const xDiff = xEnd - xStart;
+
+        // special settings if mouse is over this peptide
+        const width = (mouseIsOver) ? xDiff : xDiff / nrSamples;
+        const x = (mouseIsOver) ? xStart : xStart + (samplePos * width)
+        const stroke = (mouseIsOver) ? 'black' : 'none'
+        const height = (mouseIsOver) ? this.selRectHeight : this.defaultRectHeight
+        const yShift = (mouseIsOver) ? this.selRectHeight/2 : 0
 
         return (
             <rect
                 className="psm"
                 id={pepInfo.id}
-                x={xStart}
-                y={y-this.state.yShift}
-                width={xEnd-xStart}
-                height={this.state.rectHeight}
-                stroke={this.state.rectBorder}
+                x={x}
+                y={y-yShift}
+                width={width}
+                height={height}
+                stroke={stroke}
                 fill={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
-                onMouseOver={this.mouseOverPep}
-                onMouseOut={this.mousOutPep}
+                onMouseEnter={this.mouseEnterPep}
+                onMouseOut={this.mouseOutPep}
             />
         )
 
@@ -63,8 +94,11 @@ Peptide.propTypes = {
     xScale: PropTypes.func.isRequired,
     yScale: PropTypes.func.isRequired,
     colorScale: PropTypes.func.isRequired,
+    samplePos: PropTypes.number.isRequired,
+    nrSamples: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
-    pepInfo: PropTypes.object.isRequired
+    pepInfo: PropTypes.object.isRequired,
+    mouseIsOver:  PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {
