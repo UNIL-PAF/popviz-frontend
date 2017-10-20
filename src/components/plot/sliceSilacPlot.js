@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { brushX } from 'd3-brush';
-import { axisLeft } from 'd3-axis';
+import { axisLeft, axisBottom } from 'd3-axis';
 import * as d3 from 'd3';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -35,7 +35,7 @@ class SliceSilacPlot extends Component {
         var s = d3.event.selection;
         if(s){
             const newDomain = s.map(this.state.xScale.invert, this.state.xScale);
-            this.props.actions.changeZoomRange(newDomain[0]-this.margin.left, newDomain[1]-this.margin.left);
+            this.props.actions.changeZoomRange(newDomain[0], newDomain[1]);
 
             // remove the brush area
             this.mainG.call(brushX().move, null)
@@ -49,7 +49,8 @@ class SliceSilacPlot extends Component {
     componentDidUpdate(){
         const {protein} = this.props;
 
-        console.log('component did render')
+        const xAxis = axisBottom(this.state.xScale)
+        select(this.xAxis).call(xAxis)
 
         // re-draw the y-axis if the protein changed
         if(protein && protein.proteinAC !== this.proteinAC){
@@ -130,10 +131,12 @@ class SliceSilacPlot extends Component {
             <div>
             <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%" ref={r => this.svg = r}>
                 <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
+                <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
                 <g ref={r => this.mainG = select(r)}
                    onDoubleClick={this.zoomOut}
+                   transform={'translate('+this.margin.left+','+this.margin.top+')'}
                 >
-                    <g transform={'translate('+this.margin.left+','+this.margin.top+')'}>{ protein && plotContentGenerator() }</g>
+                    { protein && plotContentGenerator() }
                 </g>
                 { mouseOverPepId && plotPopover()}
             </svg>

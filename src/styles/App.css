@@ -74,3 +74,19 @@ peptide-pop-over.shadow {
 }
 
 
+.x-axis {
+    font-size: 4px;
+}
+
+.x-axis line {
+    stroke: lightgrey
+}
+
+.x-axis path {
+    stroke: lightgrey
+}
+
+.x-axis text {
+    fill: lightgrey
+}
+
