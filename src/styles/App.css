@@ -50,10 +50,27 @@ peptide-pop-over.shadow {
 }
 
 .peptide-pop-over-title {
-  font-weight:normal;
+    font-weight:normal;
 }
 
 .peptide-pop-over-value {
-  font-weight:bold;
+    font-weight:bold;
 }
+
+.y-axis {
+    font-size: 4px;
+}
+
+.y-axis line {
+    stroke: lightgrey
+}
+
+.y-axis path {
+    stroke: lightgrey
+}
+
+.y-axis text {
+    fill: lightgrey
+}
+
 
