@@ -2,6 +2,8 @@ import React, {
     Component,
 } from 'react';
 import PropTypes from 'prop-types';
+import * as d3 from 'd3';
+import { select } from 'd3-selection';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
@@ -15,13 +17,7 @@ class Peptide extends Component {
     constructor(props){
         super(props)
 
-        this.state = this.setDefaultRect(props);
-    }
-
-    mouseEnterPep = (e) => {
-        const bBox = e.target.getBBox()
-        console.log(e.clientX)
-        this.props.actions.mouseOverPep(e.target.id, bBox.x, bBox.y)
+        this.state = this.setDefaultRect();
     }
 
     mouseOutPep = () => {
@@ -36,13 +32,23 @@ class Peptide extends Component {
         this.setState(stateObj);
     }
 
-    setDefaultRect = (props) => {
+    setDefaultRect = () => {
         return {
             yShift: 0,
             rectHeight: this.defaultRectHeight,
             rectBorder: 'none',
             mouseIsOver: false
         };
+    }
+
+    componentDidMount(){
+        const {svgParent} = this.props;
+
+        // this event we have to call using D3 in order to get the mouse position correctly
+        select(this.rectDom).on('mouseenter', () => {
+            const [x,y] = d3.mouse(svgParent)
+            this.props.actions.mouseOverPep(this.rectDom.id, x, y)
+        })
     }
 
     render() {
@@ -70,8 +76,8 @@ class Peptide extends Component {
                 height={height}
                 stroke={stroke}
                 fill={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
-                onMouseEnter={this.mouseEnterPep}
                 onMouseOut={this.mouseOutPep}
+                ref={r => this.rectDom = r}
             />
         )
 
@@ -88,7 +94,8 @@ Peptide.propTypes = {
     nrSamples: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,
     pepInfo: PropTypes.object.isRequired,
-    mouseIsOver:  PropTypes.bool.isRequired
+    mouseIsOver:  PropTypes.bool.isRequired,
+    svgParent: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

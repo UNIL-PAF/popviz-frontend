@@ -30,8 +30,6 @@ class LoadProteinInputs extends Component {
 
         return (
             <div>
-            <p>{proteinAC}</p>
-            <p>{isLoading.toString()}</p>
             <FormGroup onSubmit={this.onLoadProtein}>
                 <InputGroup>
                     <FormControl type="text" value={this.state.proteinAC} onChange={this.changeInput} />

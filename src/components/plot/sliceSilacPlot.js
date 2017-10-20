@@ -63,13 +63,14 @@ class SliceSilacPlot extends Component {
                     mouseIsOver={p.id === mouseOverPepId}
                     samplePos={selectedSamples.indexOf(p.sampleName)}
                     nrSamples={nrSelectedSamples}
+                    svgParent={this.svg}
                     key={i}
                 />
             })
         }
 
         // create the plot area
-        const plotContentGenerator = (protein) => {
+        const plotContentGenerator = () => {
             const thisZoomLeft = (zoomLeft === undefined) ? 1 : zoomLeft;
             const thisZoomRight = (zoomRight === undefined) ? protein.sequenceLength : zoomRight;
 
@@ -84,19 +85,27 @@ class SliceSilacPlot extends Component {
             })
 
             // construct and concat the different elements of the plot
-            const pepPlotList = plotPeptides(filteredPepList, thisZoomLeft, thisZoomRight, selectedSamples)
+            var finalPlotList = plotPeptides(filteredPepList, thisZoomLeft, thisZoomRight, selectedSamples)
 
-            return pepPlotList
+
+            return finalPlotList
         }
 
+        // create popover when mouse is over a peptide
+        const plotPopover = () => {
+                return <PeptidePopOver
+                    mouseOverPepInfo={mouseOverPepInfo}
+                    mouseOverPepPos={mouseOverPepPos}
+                />
+        }
 
-            return (
+        return (
             <div>
-            <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
+            <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%" ref={r => this.svg = r}>
                 <g ref={r => this.mainG = select(r)} onDoubleClick={this.zoomOut}>
-                    { protein && plotContentGenerator(protein) }
+                    { protein && plotContentGenerator() }
                 </g>
-                {mouseOverPepInfo && <PeptidePopOver mouseOverPepInfo={mouseOverPepInfo} mouseOverPepPos={mouseOverPepPos}/>}
+                { mouseOverPepId && plotPopover()}
             </svg>
             </div>
         )
