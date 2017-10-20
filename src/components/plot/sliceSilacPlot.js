@@ -29,7 +29,7 @@ class SliceSilacPlot extends Component {
     proteinAC = undefined
 
     // set the margins
-    margin = {top: 20, right: 10, bottom: 50, left: 30};
+    margin = {top: 20, right: 10, bottom: 50, left: 40};
 
     brushend = () => {
         var s = d3.event.selection;
@@ -132,7 +132,7 @@ class SliceSilacPlot extends Component {
             <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%" ref={r => this.svg = r}>
                 <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
                 <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
-                <g ref={r => this.mainG = select(r)}
+                <g className="main-g" ref={r => this.mainG = select(r)}
                    onDoubleClick={this.zoomOut}
                    transform={'translate('+this.margin.left+','+this.margin.top+')'}
                 >

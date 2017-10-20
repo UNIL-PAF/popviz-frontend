@@ -24,6 +24,8 @@ class PeptidePopOver extends Component {
             const plotInfoObj = {
                 'Sample': pepInfo.sampleName,
                 'Sequence': pepInfo.aminoAcidBefore + '.' + pepInfo.sequence + '.' + pepInfo.aminoAcidAfter,
+                'Start pos': pepInfo.startPos,
+                'End pos': pepInfo.endPos,
                 'Mol weight': pepInfo.molWeight,
                 'H/L Ratio (log2)': pepInfo.log2ratio,
                 'Count': pepInfo.ratioCount
@@ -64,7 +66,7 @@ class PeptidePopOver extends Component {
                     x={(x+popupShiftX)}
                     y={(y+popupShiftY)}
                     width={100 + seqLengthCorr}
-                    height="40" />
+                    height="60" />
                 {infoToSvgText(mouseOverPepInfo, x, y)}
             </g>
         )

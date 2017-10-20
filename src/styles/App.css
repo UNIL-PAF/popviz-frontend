@@ -58,7 +58,7 @@ peptide-pop-over.shadow {
 }
 
 .y-axis {
-    font-size: 4px;
+    font-size: 50%;
 }
 
 .y-axis line {
@@ -75,7 +75,7 @@ peptide-pop-over.shadow {
 
 
 .x-axis {
-    font-size: 4px;
+    font-size: 50%;
 }
 
 .x-axis line {
@@ -88,5 +88,10 @@ peptide-pop-over.shadow {
 
 .x-axis text {
     fill: lightgrey
+}
+
+.main-g .selection {
+    stroke: white;
+    fill: white;
 }
 
