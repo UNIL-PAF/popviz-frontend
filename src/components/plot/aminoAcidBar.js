@@ -18,7 +18,7 @@ class AminoAcidBar extends Component {
 
         const plotAaBar = () => {
             return subSeq.map( (s,i) => {
-                return <text className="aa-bar" key={i} fontSize={fontSize} x={xScale(start + (i+1))} y={yPos} textAnchor="middle">{s}</text>
+                return <text className="aa-bar" key={i} fontSize={fontSize} x={xScale(start + (i+1))} y={yPos} textAnchor="middle" alignmentBaseline="hanging">{s}</text>
             } )
         }
 
