@@ -69,8 +69,10 @@ class SliceSilacPlot extends Component {
     }
 
     zoomOut = () => {
-        const {width} = this.props;
-        this.props.actions.changeZoomRange(1, width);
+        const {protein} = this.props;
+        if(protein){
+            this.props.actions.changeZoomRange(1, protein.sequenceLength);
+        }
     }
 
     render() {
@@ -119,33 +121,18 @@ class SliceSilacPlot extends Component {
             // plot the AA bar
             finalPlotList.push(plotAminAcidBar(thisZoomLeft, thisZoomRight));
 
-            finalPlotList.push(dummyPlot(thisZoomRight, thisZoomLeft))
-
             return finalPlotList
         }
 
-        const dummyPlot= (thisZoomRight, thisZoomLeft) => {
-            return <text key="dummy-plot" y={height - this.margin.bottom} x={thisZoomRight-this.margin.left} fontSize={10} fontFamily="monospace" fill="red">X</text>
-        }
-
         const plotAminAcidBar = (thisZoomLeft, thisZoomRight) => {
-
-            const viewBoxRatioX = this.svg.width.baseVal.value / width
-            const xAxisLengthPx = this.svg.width.baseVal.value - viewBoxRatioX * (this.margin.left + this.margin.right)
-
-            console.log('svg-width: ' + this.svg.width.baseVal.value)
-            console.log('xAxisLengthPx: ' + xAxisLengthPx)
 
             return <AminoAcidBar
                     zoomLeft={thisZoomLeft}
                     zoomRight={thisZoomRight}
                     sequence={protein.sequence}
                     xScale={this.state.xScale}
-                    yPos={height - this.margin.bottom}
-                    xPos={this.margin.left}
+                    yPos={height - this.margin.bottom + 5}
                     key="amino-acid-bar"
-                    xAxisLengthPx={xAxisLengthPx}
-                    viewBoxRatioX={viewBoxRatioX}
                 />
         }
 
