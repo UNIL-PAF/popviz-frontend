@@ -59,31 +59,36 @@ peptide-pop-over.shadow {
 
 .y-axis {
     font-size: 50%;
+    font-weight: lighter;
 }
 
 .y-axis line {
-    stroke: lightgrey
+    stroke: lightgrey;
+    stroke-width: 0.5;
 }
 
 .y-axis path {
-    stroke: lightgrey
+    stroke: lightgrey;
+    stroke-width: 0.5;
 }
 
 .y-axis text {
     fill: lightgrey
 }
 
-
 .x-axis {
     font-size: 50%;
+    font-weight: lighter;
 }
 
 .x-axis line {
-    stroke: lightgrey
+    stroke: lightgrey;
+    stroke-width: 0.5;
 }
 
 .x-axis path {
-    stroke: lightgrey
+    stroke: lightgrey;
+    stroke-width: 0.5;
 }
 
 .x-axis text {
@@ -95,3 +100,7 @@ peptide-pop-over.shadow {
     fill: white;
 }
 
+.aa-bar {
+    font-family: "Lucida Console", Monaco, monospace;
+    fill: white;
+}

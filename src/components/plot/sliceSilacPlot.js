@@ -2,7 +2,7 @@ import React, {
     Component,
 } from 'react';
 import PropTypes from 'prop-types';
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, scaleOrdinal } from 'd3-scale';
 import { select } from 'd3-selection';
 import { brushX } from 'd3-brush';
 import { axisLeft, axisBottom } from 'd3-axis';
@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
 import Peptide from './peptide'
 import PeptidePopOver from './peptidePopOver'
+import AminoAcidBar from './aminoAcidBar'
 
 class SliceSilacPlot extends Component {
 
@@ -49,10 +50,11 @@ class SliceSilacPlot extends Component {
     componentDidUpdate(){
         const {protein} = this.props;
 
+        // add the x-axis
         const xAxis = axisBottom(this.state.xScale)
         select(this.xAxis).call(xAxis)
 
-        // re-draw the y-axis if the protein changed
+        // re-draw the y-axis only if the protein changed
         if(protein && protein.proteinAC !== this.proteinAC){
 
             const yAxis = axisLeft(this.state.yScale)
@@ -64,8 +66,6 @@ class SliceSilacPlot extends Component {
             // store the current proteinAC to make sure that we re-render the y-axis after a new protein loaded
             this.proteinAC = protein.proteinAC
         }
-
-
     }
 
     zoomOut = () => {
@@ -116,7 +116,37 @@ class SliceSilacPlot extends Component {
             // construct and concat the different elements of the plot
             var finalPlotList = plotPeptides(filteredPepList, thisZoomLeft, thisZoomRight, selectedSamples)
 
+            // plot the AA bar
+            finalPlotList.push(plotAminAcidBar(thisZoomLeft, thisZoomRight));
+
+            finalPlotList.push(dummyPlot(thisZoomRight, thisZoomLeft))
+
             return finalPlotList
+        }
+
+        const dummyPlot= (thisZoomRight, thisZoomLeft) => {
+            return <text key="dummy-plot" y={height - this.margin.bottom} x={thisZoomRight-this.margin.left} fontSize={10} fontFamily="monospace" fill="red">X</text>
+        }
+
+        const plotAminAcidBar = (thisZoomLeft, thisZoomRight) => {
+
+            const viewBoxRatioX = this.svg.width.baseVal.value / width
+            const xAxisLengthPx = this.svg.width.baseVal.value - viewBoxRatioX * (this.margin.left + this.margin.right)
+
+            console.log('svg-width: ' + this.svg.width.baseVal.value)
+            console.log('xAxisLengthPx: ' + xAxisLengthPx)
+
+            return <AminoAcidBar
+                    zoomLeft={thisZoomLeft}
+                    zoomRight={thisZoomRight}
+                    sequence={protein.sequence}
+                    xScale={this.state.xScale}
+                    yPos={height - this.margin.bottom}
+                    xPos={this.margin.left}
+                    key="amino-acid-bar"
+                    xAxisLengthPx={xAxisLengthPx}
+                    viewBoxRatioX={viewBoxRatioX}
+                />
         }
 
         // create popover when mouse is over a peptide
