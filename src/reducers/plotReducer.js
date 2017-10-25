@@ -1,4 +1,4 @@
-import { CHANGE_ZOOM_RANGE, MOUSE_OVER_PEP, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION } from '../actions/const'
+import { CHANGE_ZOOM_RANGE, MOUSE_OVER_PEP, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION , MOUSE_OVER_SEQUENCE} from '../actions/const'
 
 const defaultState = {
     zoomLeft: undefined,
@@ -90,6 +90,20 @@ export default function changePlot(state = defaultState, action = null) {
               ...state,
               sampleSelection: action.sampleSelection,
               filteredPepList: filterPepsAfterSampleSelection(state, action.sampleSelection)
+          }
+      case MOUSE_OVER_SEQUENCE:
+          const isMouseOverSeq = (sampleName, seq) => {
+              if(sampleName && seq){
+                  return { sampleName: sampleName, sequence: seq }
+              }else{
+                  null
+              }
+          }
+
+
+          return {
+              ...state,
+              mouseOverSequence: isMouseOverSeq(action.sampleName, action.sequence)
           }
     default:
       return state

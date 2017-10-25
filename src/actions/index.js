@@ -30,3 +30,6 @@ export function mouseOverPep(id, x, y) {
     return { type: types.MOUSE_OVER_PEP, id: id , x: x, y: y}
 }
 
+export function mouseOverSequence(sampleName, sequence){
+    return { type: types.MOUSE_OVER_SEQUENCE, sampleName: sampleName, sequence: sequence}
+}

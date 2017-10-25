@@ -2,21 +2,24 @@ import React, {
     Component,
 } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as PlotActions from '../../actions'
 import { schemeCategory20 } from 'd3-scale';
 import * as _ from 'lodash';
 
 class PeptideAaSequences extends Component {
 
     mouseEntered = (sampleName, sequence) => {
-        console.log('mouse entered')
+        this.props.actions.mouseOverSequence(sampleName, sequence)
     }
 
     mouseLeft = () => {
-        console.log('mouse left')
+        this.props.actions.mouseOverSequence(undefined, undefined)
     }
 
     render() {
-        const { peptideSequences, selectedSamples, zoomLeft, zoomRight, xScale, yPos, yShift, sampleSelection } = this.props;
+        const { peptideSequences, selectedSamples, zoomLeft, zoomRight, xScale, yPos, yShift, sampleSelection, mouseOverSequence } = this.props;
 
         // the sequence to plot
         const [start, end] = [Math.floor(zoomLeft), Math.floor(zoomRight)]
@@ -32,16 +35,31 @@ class PeptideAaSequences extends Component {
         const fontSize = 1000/fontSizeRatio
 
         const plotSeqRect = (seqInfo, sampleName, maxShift, sampleColor) => {
+
+            const highlight = (bool) => {
+                return {
+                    height: (bool ? 2 : 0),
+                    y: (bool ? 1 : 0),
+                    strokeWidth: (bool ? 1 : 0.5),
+                    stroke: (bool ? 'white' : sampleColor)
+                }
+            }
+
+            const seq = seqInfo.sequence
+            const doHighlight = mouseOverSequence && mouseOverSequence.sampleName === sampleName && mouseOverSequence.sequence === seq
+            const highlightObj = highlight(doHighlight)
+
             return <rect
                     className="pep-aa-rect"
-                    key={sampleName + seqInfo.sequence}
+                    key={sampleName + seq}
                     x={xScale(seqInfo.startPos - 0.5)}
-                    y={yPos + maxShift * yShift - fontSize/30}
+                    y={yPos + maxShift * yShift - fontSize/30 - highlightObj.y}
                     width={xScale(seqInfo.endPos)-xScale(seqInfo.startPos-1)}
-                    height={fontSize*0.8}
+                    height={fontSize*0.8 + highlightObj.height}
                     fill={sampleColor}
-                    stroke={sampleColor}
-                    onMouseEnter={() => this.mouseEntered()}
+                    stroke={highlightObj.stroke}
+                    strokeWidth={highlightObj.strokeWidth}
+                    onMouseEnter={() => this.mouseEntered(sampleName, seq)}
                     onMouseLeave={() => this.mouseLeft()}
                     >
                     </rect>
@@ -118,7 +136,24 @@ PeptideAaSequences.propTypes = {
     xScale: PropTypes.func.isRequired,
     peptideSequences: PropTypes.object.isRequired,
     selectedSamples: PropTypes.array.isRequired,
-    sampleSelection: PropTypes.array.isRequired
+    sampleSelection: PropTypes.array.isRequired,
+    mouseOverSequence: PropTypes.object
 };
 
-export default (PeptideAaSequences);
+
+function mapStateToProps(state) {
+    const props = {
+        mouseOverSequence: state.plotReducer.mouseOverSequence
+    };
+
+    return props;
+}
+
+function mapDispatchToProps(dispatch) {
+    const actionMap = {
+        actions: bindActionCreators(PlotActions, dispatch)
+    };
+    return actionMap;
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PeptideAaSequences);
