@@ -3,11 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
-import { interpolateRdYlGn } from 'd3-scale-chromatic';
 
 class Peptide extends Component {
 
@@ -18,6 +18,16 @@ class Peptide extends Component {
         super(props)
 
         this.state = this.setDefaultRect();
+    }
+
+    // prepare the coloRange
+    colorScale = scaleLinear().domain([-2, 0, 2]).range(["green", "lightgrey", "red"]);
+
+    // limit ratio range to -2 and 2
+    limitRatioRange = (ratio) => {
+        if(ratio < -2) return -2
+        if(ratio > 2) return 2
+        return ratio
     }
 
     mouseOutPep = () => {
@@ -52,17 +62,20 @@ class Peptide extends Component {
     }
 
     render() {
-        const {yScale, xScale, colorScale, pepInfo, nrSamples, samplePos, mouseIsOver} = this.props;
+        const {yScale, xScale, pepInfo, nrSamples, samplePos, mouseIsOver} = this.props;
 
         const y = yScale(pepInfo.molWeight);
         const xStart = xScale(pepInfo.startPos);
         const xEnd = xScale(pepInfo.endPos);
         const xDiff = xEnd - xStart;
 
+        // get the color according to its ratio
+        const ratioCol = this.colorScale(this.limitRatioRange(pepInfo.log2ratio))
+
         // special settings if mouse is over this peptide
         const width = (mouseIsOver) ? xDiff : xDiff / nrSamples;
         const x = (mouseIsOver) ? xStart : xStart + (samplePos * width)
-        const stroke = (mouseIsOver) ? 'black' : 'none'
+        const stroke = (mouseIsOver) ? ratioCol : 'none'
         const height = (mouseIsOver) ? this.selRectHeight : this.defaultRectHeight
         const yShift = (mouseIsOver) ? this.selRectHeight/2 : 0
 
@@ -74,8 +87,8 @@ class Peptide extends Component {
                 y={y-yShift}
                 width={width}
                 height={height}
-                stroke={stroke}
-                fill={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
+                stroke={ratioCol}
+                fill={ratioCol}
                 onMouseOut={() => this.mouseOutPep()}
                 ref={r => this.rectDom = r}
             />
@@ -89,7 +102,6 @@ Peptide.propTypes = {
     zoomRight: PropTypes.number,
     xScale: PropTypes.func.isRequired,
     yScale: PropTypes.func.isRequired,
-    colorScale: PropTypes.func.isRequired,
     samplePos: PropTypes.number.isRequired,
     nrSamples: PropTypes.number.isRequired,
     actions: PropTypes.object.isRequired,

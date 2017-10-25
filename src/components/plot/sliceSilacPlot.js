@@ -23,7 +23,7 @@ class SliceSilacPlot extends Component {
         this.state = {
             xScale: scaleLinear().range([0, this.props.width - this.margin.left - this.margin.right]),
             yScale: scaleLinear().range([this.props.height - this.margin.top - this.margin.bottom, 0]),
-            colorScale: scaleLinear().domain([2,-2]).range([0,1])
+            //colorScale: scaleLinear().domain([2,-2]).range([0,1])
         }
     }
 
@@ -77,21 +77,21 @@ class SliceSilacPlot extends Component {
     }
 
     render() {
-        const {width, height, zoomLeft, zoomRight, protein, filteredPepList, mouseOverPepId, mouseOverPepInfo, mouseOverPepPos, sampleSelection} = this.props;
+        const {width, height, zoomLeft, zoomRight, protein, filteredPepList, mouseOverPepIds, mouseOverPepInfo, mouseOverPepPos, sampleSelection} = this.props;
 
         // create the array containing the peptide plot elements
         const plotPeptides = (selectedPeps, thisZoomLeft, thisZoomRight, selectedSamples) => {
             const nrSelectedSamples = selectedSamples.length
 
             return selectedPeps.map((p,i) => {
+
                 return <Peptide
                     zoomLeft={thisZoomLeft}
                     zoomRight={thisZoomRight}
                     xScale={this.state.xScale}
                     yScale={this.state.yScale}
-                    colorScale={this.state.colorScale}
                     pepInfo={p}
-                    mouseIsOver={p.id === mouseOverPepId}
+                    mouseIsOver={(mouseOverPepIds && mouseOverPepIds.indexOf(p.id) > -1)?true:false}
                     samplePos={selectedSamples.indexOf(p.sampleName)}
                     nrSamples={nrSelectedSamples}
                     svgParent={this.svg}
@@ -178,7 +178,7 @@ class SliceSilacPlot extends Component {
                 >
                     { protein && plotContentGenerator() }
                 </g>
-                { mouseOverPepId && plotPopover()}
+                { mouseOverPepInfo && plotPopover()}
             </svg>
             </div>
         )
@@ -194,7 +194,7 @@ SliceSilacPlot.propTypes = {
     height: PropTypes.number.isRequired,
     protein: PropTypes.object,
     sampleSelection: PropTypes.array.isRequired,
-    mouseOverPepId: PropTypes.string,
+    mouseOverPepIds: PropTypes.array,
     mouseOverPepInfo: PropTypes.object,
     mouseOverPepPos: PropTypes.array,
     filteredPepList: PropTypes.array
@@ -206,7 +206,7 @@ function mapStateToProps(state) {
         zoomRight: state.plotReducer.zoomRight,
         protein: state.plotReducer.protein,
         sampleSelection: state.plotReducer.sampleSelection,
-        mouseOverPepId: state.plotReducer.mouseOverPepId,
+        mouseOverPepIds: state.plotReducer.mouseOverPepIds,
         mouseOverPepInfo: state.plotReducer.mouseOverPepInfo,
         mouseOverPepPos: state.plotReducer.mouseOverPepPos,
         filteredPepList: state.plotReducer.filteredPepList

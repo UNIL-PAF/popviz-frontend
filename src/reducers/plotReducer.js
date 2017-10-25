@@ -3,7 +3,7 @@ import { CHANGE_ZOOM_RANGE, MOUSE_OVER_PEP, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SEL
 const defaultState = {
     zoomLeft: undefined,
     zoomRight: undefined,
-    mouseOverPepId: undefined,
+    mouseOverPepIds: null,
     mouseOverPepInfo: null,
     sampleSelection: [
         {sampleName: '8967', selected: false},
@@ -48,7 +48,6 @@ export default function changePlot(state = defaultState, action = null) {
         return createFilteredList(filteredPeps, sampleSelection)
     }
 
-
   switch (action.type) {
       case CHANGE_ZOOM_RANGE:
           return  {
@@ -63,7 +62,7 @@ export default function changePlot(state = defaultState, action = null) {
           }
           return {
               ...state,
-              mouseOverPepId: action.id,
+              mouseOverPepIds: [action.id],
               mouseOverPepInfo: getPepInfo(state.filteredPepList, action.id),
               mouseOverPepPos: [action.x, action.y]
           }
@@ -96,14 +95,24 @@ export default function changePlot(state = defaultState, action = null) {
               if(sampleName && seq){
                   return { sampleName: sampleName, sequence: seq }
               }else{
-                  null
+                  return null
               }
           }
 
+          // find the pep ids to highlight (which have the same sample and sequence)
+          const findPepIds = (sampleName, seq, filteredPepList) => {
+              const peptides = filteredPepList.filter( (p) => {
+                  return p.sampleName === sampleName && p.sequence === seq
+              })
+              return peptides.map( (p) => {
+                  return p.id
+              })
+          }
 
           return {
               ...state,
-              mouseOverSequence: isMouseOverSeq(action.sampleName, action.sequence)
+              mouseOverSequence: isMouseOverSeq(action.sampleName, action.sequence),
+              mouseOverPepIds: findPepIds(action.sampleName, action.sequence, state.filteredPepList)
           }
     default:
       return state

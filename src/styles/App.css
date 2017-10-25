@@ -28,7 +28,7 @@
 }
 
 .slice-silac-svg {
-  background-color: #404040
+  background-color: white
 }
 
 .psm {
@@ -63,17 +63,17 @@ peptide-pop-over.shadow {
 }
 
 .y-axis line {
-    stroke: lightgrey;
+    stroke: #404040;
     stroke-width: 0.5;
 }
 
 .y-axis path {
-    stroke: lightgrey;
+    stroke: #404040;
     stroke-width: 0.5;
 }
 
 .y-axis text {
-    fill: lightgrey
+    fill: #404040
 }
 
 .x-axis {
@@ -82,35 +82,35 @@ peptide-pop-over.shadow {
 }
 
 .x-axis line {
-    stroke: lightgrey;
+    stroke: #404040;
     stroke-width: 0.5;
 }
 
 .x-axis path {
-    stroke: lightgrey;
+    stroke: #404040;
     stroke-width: 0.5;
 }
 
 .x-axis text {
-    fill: lightgrey
+    fill: #404040
 }
 
 .main-g .selection {
-    stroke: white;
-    fill: white;
+    stroke: none;
+    fill: grey;
 }
 
 .aa-bar {
     font-family: "Lucida Console", Monaco, monospace;
-    fill: white;
+    fill: #404040;
 }
 
 .pep-aa {
     font-family: "Lucida Console", Monaco, monospace;
-    fill: white;
+    fill: #404040;
     text-anchor: middle;
 }
 
 .pep-aa-rect {
-    fill-opacity:0.5;
+    fill-opacity:0.3;
 }

@@ -25,7 +25,7 @@ class PeptideAaSequences extends Component {
         const [start, end] = [Math.floor(zoomLeft), Math.floor(zoomRight)]
 
         // we take first the light colors from "schemeCategory20" and afterwards the darker ones
-        const colorSchemeArray = _.range(1, 20, 2).concat(_.range(0, 19, 2))
+        const colorSchemeArray = _.range(0, 19, 2).concat(_.range(1, 20, 2))
 
         // create an array with entries for every AA position
         var aaShiftArray = []
@@ -41,7 +41,7 @@ class PeptideAaSequences extends Component {
                     height: (bool ? 2 : 0),
                     y: (bool ? 1 : 0),
                     strokeWidth: (bool ? 1 : 0.5),
-                    stroke: (bool ? 'white' : sampleColor)
+                    stroke: (bool ? 'red' : sampleColor)
                 }
             }
 
