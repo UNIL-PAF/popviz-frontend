@@ -108,6 +108,7 @@ peptide-pop-over.shadow {
 .pep-aa {
     font-family: "Lucida Console", Monaco, monospace;
     fill: white;
+    text-anchor: middle;
 }
 
 .pep-aa-rect {

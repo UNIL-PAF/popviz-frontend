@@ -76,7 +76,7 @@ class Peptide extends Component {
                 height={height}
                 stroke={stroke}
                 fill={interpolateRdYlGn(colorScale(pepInfo.log2ratio))}
-                onMouseOut={this.mouseOutPep}
+                onMouseOut={() => this.mouseOutPep()}
                 ref={r => this.rectDom = r}
             />
         )

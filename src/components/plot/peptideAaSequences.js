@@ -7,6 +7,14 @@ import * as _ from 'lodash';
 
 class PeptideAaSequences extends Component {
 
+    mouseEntered = (sampleName, sequence) => {
+        console.log('mouse entered')
+    }
+
+    mouseLeft = () => {
+        console.log('mouse left')
+    }
+
     render() {
         const { peptideSequences, selectedSamples, zoomLeft, zoomRight, xScale, yPos, yShift, sampleSelection } = this.props;
 
@@ -28,11 +36,13 @@ class PeptideAaSequences extends Component {
                     className="pep-aa-rect"
                     key={sampleName + seqInfo.sequence}
                     x={xScale(seqInfo.startPos - 0.5)}
-                    y={yPos + maxShift * yShift - 0.5}
+                    y={yPos + maxShift * yShift - fontSize/30}
                     width={xScale(seqInfo.endPos)-xScale(seqInfo.startPos-1)}
                     height={fontSize*0.8}
                     fill={sampleColor}
                     stroke={sampleColor}
+                    onMouseEnter={() => this.mouseEntered()}
+                    onMouseLeave={() => this.mouseLeft()}
                     >
                     </rect>
         }
@@ -44,8 +54,7 @@ class PeptideAaSequences extends Component {
                 fontSize={fontSize}
                 x={xScale(seqInfo.startPos + (i))}
                 y={yPos + maxShift * yShift}
-                textAnchor="middle"
-                alignmentBaseline="hanging">
+                dominantBaseline="hanging">
                 {s}
             </text>
         }
