@@ -104,3 +104,13 @@ peptide-pop-over.shadow {
     font-family: "Lucida Console", Monaco, monospace;
     fill: white;
 }
+
+.pep-aa {
+    font-family: "Lucida Console", Monaco, monospace;
+    fill: white;
+}
+
+.pep-aa-rect {
+    fill-opacity:0.5;
+    stroke-width: 0.5;
+}

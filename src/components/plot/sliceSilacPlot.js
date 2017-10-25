@@ -2,7 +2,7 @@ import React, {
     Component,
 } from 'react';
 import PropTypes from 'prop-types';
-import { scaleLinear, scaleOrdinal } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { brushX } from 'd3-brush';
 import { axisLeft, axisBottom } from 'd3-axis';
@@ -13,6 +13,7 @@ import * as ControlActions from '../../actions'
 import Peptide from './peptide'
 import PeptidePopOver from './peptidePopOver'
 import AminoAcidBar from './aminoAcidBar'
+import PeptideAaSequences from './peptideAaSequences'
 
 class SliceSilacPlot extends Component {
 
@@ -30,7 +31,7 @@ class SliceSilacPlot extends Component {
     proteinAC = undefined
 
     // set the margins
-    margin = {top: 20, right: 10, bottom: 50, left: 40};
+    margin = {top: 20, right: 10, bottom: 100, left: 40};
 
     brushend = () => {
         var s = d3.event.selection;
@@ -121,9 +122,31 @@ class SliceSilacPlot extends Component {
             // plot the AA bar
             finalPlotList.push(plotAminAcidBar(thisZoomLeft, thisZoomRight));
 
+            // plot the peptide AA sequences
+            finalPlotList.push(plotPeptideAaSequences(thisZoomLeft, thisZoomRight, selectedSamples))
+
             return finalPlotList
         }
 
+
+        // prepare the peptide AA seuquences plot
+        const plotPeptideAaSequences = (thisZoomLeft, thisZoomRight, selectedSamples) => {
+
+            return <PeptideAaSequences
+                    zoomLeft={thisZoomLeft}
+                    zoomRight={thisZoomRight}
+                    selectedSamples={selectedSamples}
+                    sampleSelection={sampleSelection}
+                    peptideSequences={protein.samples}
+                    xScale={this.state.xScale}
+                    yPos={height - this.margin.bottom + 10}
+                    yShift={10}
+                    key="pep-aa-seqs"
+            />
+        }
+
+
+        // prepare the AA bar
         const plotAminAcidBar = (thisZoomLeft, thisZoomRight) => {
 
             return <AminoAcidBar
@@ -131,7 +154,7 @@ class SliceSilacPlot extends Component {
                     zoomRight={thisZoomRight}
                     sequence={protein.sequence}
                     xScale={this.state.xScale}
-                    yPos={height - this.margin.bottom - 3}
+                    yPos={height - this.margin.bottom + 1}
                     key="amino-acid-bar"
                 />
         }

@@ -13,6 +13,7 @@ class AminoAcidBar extends Component {
         const [start, end] = [Math.floor(zoomLeft), Math.floor(zoomRight)]
         const subSeq = sequence.substring(start, end).split('')
 
+        // adapt the font size to the zoom range
         const fontSizeRatio = (subSeq.length < 100) ? 100 : subSeq.length
         const fontSize = 1000/ fontSizeRatio
 
@@ -30,8 +31,8 @@ class AminoAcidBar extends Component {
 }
 
 AminoAcidBar.propTypes = {
-    zoomLeft: PropTypes.number,
-    zoomRight: PropTypes.number,
+    zoomLeft: PropTypes.number.isRequired,
+    zoomRight: PropTypes.number.isRequired,
     xScale: PropTypes.func.isRequired,
     sequence: PropTypes.string.isRequired
 };
