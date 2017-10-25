@@ -87,7 +87,7 @@ class Peptide extends Component {
                 y={y-yShift}
                 width={width}
                 height={height}
-                stroke={ratioCol}
+                stroke={stroke}
                 fill={ratioCol}
                 onMouseOut={() => this.mouseOutPep()}
                 ref={r => this.rectDom = r}
