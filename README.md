@@ -5,13 +5,13 @@ It is based on D3.js and ReactJS.
 
 ## Running in development mode
 
-### Prerequisites
+#### Prerequisites
 [Node.js](https://nodejs.org)
 
-### Install npm packages
+#### Install npm packages
 `npm install`
 
-### Run the development server
+#### Run the development server
 `npm start`
 
 
