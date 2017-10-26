@@ -3,6 +3,8 @@
 This is the frontend for the Slice silac visualization developed for the Department of Physiology UNIL.
 It is based on D3.js and ReactJS.
 
+----
+
 ## Running in development mode
 
 #### Prerequisites
@@ -14,6 +16,7 @@ It is based on D3.js and ReactJS.
 #### Run the development server
 `npm start`
 
+----
 
 ## Building the frontend
 
