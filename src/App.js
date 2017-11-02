@@ -36,15 +36,6 @@ class App extends Component {
             <SliceSilacPlot width={800} height={300}/>
         </div>
 
-          <hr/>
-              <div className="footer">
-                  <p>shaped by&nbsp;
-                      <a href="http://www.vital-it.ch/">Vital-IT</a>&nbsp;
-                      <span>with&nbsp;</span>
-                      <span className="glyphicon glyphicon-heart"></span>
-                  </p>
-              </div>
-
       </div>
     );
   }
