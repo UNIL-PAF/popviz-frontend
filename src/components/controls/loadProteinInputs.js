@@ -2,7 +2,7 @@ import React, {
     Component
 } from 'react';
 import PropTypes from 'prop-types';
-import { Button , FormGroup, InputGroup, FormControl } from 'react-bootstrap';
+import { Button , FormGroup, InputGroup, FormControl, Navbar } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
@@ -29,16 +29,18 @@ class LoadProteinInputs extends Component {
         if(isLoading) loadProteinFromBackend(proteinAC, this.props.actions.proteinIsLoaded);
 
         return (
-            <div>
-            <FormGroup onSubmit={this.onLoadProtein}>
-                <InputGroup>
-                    <FormControl type="text" value={this.state.proteinAC} onChange={this.changeInput} />
-                    <InputGroup.Button>
-                        <Button onClick={this.onLoadProtein}>Load</Button>
-                    </InputGroup.Button>
-                </InputGroup>
-            </FormGroup>
-            </div>
+            <Navbar.Collapse>
+                <Navbar.Form pullLeft>
+                    <FormGroup onSubmit={this.onLoadProtein}>
+                        <InputGroup>
+                            <FormControl type="text" value={this.state.proteinAC} onChange={this.changeInput} />
+                            <InputGroup.Button>
+                                <Button onClick={this.onLoadProtein}>Load</Button>
+                            </InputGroup.Button>
+                        </InputGroup>
+                    </FormGroup>
+                </Navbar.Form>
+            </Navbar.Collapse>
         )
 
     }

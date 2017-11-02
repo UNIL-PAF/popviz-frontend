@@ -114,3 +114,14 @@ peptide-pop-over.shadow {
 .pep-aa-rect {
     fill-opacity:0.3;
 }
+
+#sib-logo {
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+/*
+.navbar { min-height:60px; height: 60px; }
+
+.navbar .navbar-nav > li > a {  padding-top: 0px; padding-bottom: 0px; line-height: 40px; }
+*/
