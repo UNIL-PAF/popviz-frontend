@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './styles/App.css';
-import { Grid, Row, Col, Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 import sibLogo from './images/sib_logo_2.png';
 import LoadProteinInputs from './components/controls/loadProteinInputs'
 import SelectSamples from './components/controls/selectSamples'

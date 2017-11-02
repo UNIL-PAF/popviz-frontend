@@ -4,7 +4,8 @@ import React, {
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { NavDropdown, Row, Col, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import * as _ from 'lodash';
+import { NavDropdown, FormGroup, FormControl } from 'react-bootstrap'
 
 import * as ControlActions from '../../actions'
 
@@ -41,6 +42,15 @@ class SelectSamples extends Component {
     render() {
         const {sampleSelection} = this.props;
 
+        const renderSampleGroups = () => {
+            const desc = _.map(sampleSelection, 'description')
+            const uniqDesc = _.uniq(desc)
+
+            return uniqDesc.map( d => {
+                return <option key={d} value={d}>{d}</option>
+            })
+        }
+
         const renderSourceSelectionDropdown = () => {
             return   <FormGroup controlId="formControlsSelect" className="sample-menu-dropdown">
                         <FormControl
@@ -49,10 +59,7 @@ class SelectSamples extends Component {
                             value={this.state.selectSampleGroupValue}
                         >
                             <option value="" hidden>Select a group...</option>
-                            <option value="U2OS 4uM">U2OS 4uM</option>
-                            <option value="U2OS 32uM">U2OS 32uM</option>
-                            <option value="HCT 2uM">HCT 2uM</option>
-                            <option value="HCT 32uM">HCT 32uM</option>
+                            {renderSampleGroups()}
                         </FormControl>
                     </FormGroup>
         }
