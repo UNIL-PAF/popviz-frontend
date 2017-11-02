@@ -120,8 +120,16 @@ peptide-pop-over.shadow {
     padding-left: 10px;
 }
 
-/*
-.navbar { min-height:60px; height: 60px; }
+.dropdown-menu {
+    width: 200px;
+}
 
-.navbar .navbar-nav > li > a {  padding-top: 0px; padding-bottom: 0px; line-height: 40px; }
-*/
+.sample-menu-dropdown {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.sample-menu-item {
+    text-nowrap: true;
+    padding-left: 15px;
+}

@@ -6,16 +6,16 @@ const defaultState = {
     mouseOverPepIds: null,
     mouseOverPepInfo: null,
     sampleSelection: [
-        {sampleName: '8967', selected: false},
-        {sampleName: '9052', selected: false},
-        {sampleName: '9053', selected: false},
-        {sampleName: '8968', selected: false},
-        {sampleName: '9508', selected: false},
-        {sampleName: '9062', selected: true},
-        {sampleName: '9063', selected: true},
-        {sampleName: '9064', selected: true},
-        {sampleName: '8987', selected: false},
-        {sampleName: '9507', selected: false}
+        {sampleName: '8967', selected: false, description: 'U2OS 4uM'},
+        {sampleName: '9052', selected: false, description: 'U2OS 4uM'},
+        {sampleName: '9053', selected: false, description: 'U2OS 4uM'},
+        {sampleName: '8968', selected: false, description: 'U2OS 32uM'},
+        {sampleName: '9508', selected: false, description: 'U2OS 32uM'},
+        {sampleName: '9062', selected: true, description: 'HCT 2uM'},
+        {sampleName: '9063', selected: true, description: 'HCT 2uM'},
+        {sampleName: '9064', selected: true, description: 'HCT 2uM'},
+        {sampleName: '8987', selected: false, description: 'HCT 32uM'},
+        {sampleName: '9507', selected: false, description: 'HCT 32uM'}
     ],
     protein: null,
     filteredPepList: null

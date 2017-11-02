@@ -29,7 +29,6 @@ class LoadProteinInputs extends Component {
         if(isLoading) loadProteinFromBackend(proteinAC, this.props.actions.proteinIsLoaded);
 
         return (
-            <Navbar.Collapse>
                 <Navbar.Form pullLeft>
                     <FormGroup onSubmit={this.onLoadProtein}>
                         <InputGroup>
@@ -40,7 +39,6 @@ class LoadProteinInputs extends Component {
                         </InputGroup>
                     </FormGroup>
                 </Navbar.Form>
-            </Navbar.Collapse>
         )
 
     }
