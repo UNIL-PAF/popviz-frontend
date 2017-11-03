@@ -42,6 +42,10 @@ class Peptide extends Component {
         this.setState(stateObj);
     }
 
+    clickedRect = () => {
+        console.log('clicked REcgt')
+    }
+
     setDefaultRect = () => {
         return {
             yShift: 0,
@@ -90,6 +94,7 @@ class Peptide extends Component {
                 stroke={stroke}
                 fill={ratioCol}
                 onMouseOut={() => this.mouseOutPep()}
+                onClick={() => this.clickedRect()}
                 ref={r => this.rectDom = r}
             />
         )

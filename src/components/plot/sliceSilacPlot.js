@@ -46,12 +46,12 @@ class SliceSilacPlot extends Component {
             this.props.actions.changeZoomRange(newDomain[0], newDomain[1]);
 
             // remove the brush area
-            this.mainG.call(brushX().move, null)
+            this.brushG.call(brushX().move, null)
         }
     }
 
     componentDidMount(){
-        setTimeout(() => this.mainG.call(brushX(this.state.xScale).on('end', this.brushend)))
+        setTimeout(() => this.brushG.call(brushX(this.state.xScale).on('end', this.brushend)))
     }
 
     componentDidUpdate(){
@@ -232,7 +232,8 @@ class SliceSilacPlot extends Component {
                 <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height + additionalHeight}`} width="100%" height="100%" ref={r => this.svg = r}>
                     <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
                     <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
-                    <g className="main-g" ref={r => this.mainG = select(r)} onDoubleClick={this.zoomOut} transform={'translate('+this.margin.left+','+this.margin.top+')'}>
+                    <g className="brush-g" ref={r => this.brushG = select(r)} onDoubleClick={this.zoomOut} transform={'translate('+this.margin.left+','+this.margin.top+')'}/>
+                    <g className="main-g" transform={'translate('+this.margin.left+','+this.margin.top+')'}>
                         { plotContent }
                     </g>
                     { plotPopover }
