@@ -42,10 +42,6 @@ class Peptide extends Component {
         this.setState(stateObj);
     }
 
-    clickedRect = () => {
-        console.log('clicked REcgt')
-    }
-
     setDefaultRect = () => {
         return {
             yShift: 0,
@@ -62,6 +58,15 @@ class Peptide extends Component {
         select(this.rectDom).on('mouseenter', () => {
             const [x,y] = d3.mouse(svgParent)
             this.props.actions.mouseOverPep(this.rectDom.id, x, y)
+        })
+
+        select(this.rectDom).on('mouseout', () => {
+            this.mouseOutPep()
+        })
+
+        select(this.rectDom).on('click', () => {
+            const [x,y] = d3.mouse(svgParent)
+            this.props.actions.clickOnPep(this.rectDom.id, x, y)
         })
     }
 
@@ -93,8 +98,6 @@ class Peptide extends Component {
                 height={height}
                 stroke={stroke}
                 fill={ratioCol}
-                onMouseOut={() => this.mouseOutPep()}
-                onClick={() => this.clickedRect()}
                 ref={r => this.rectDom = r}
             />
         )

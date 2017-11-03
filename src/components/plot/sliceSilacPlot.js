@@ -259,7 +259,8 @@ SliceSilacPlot.propTypes = {
     mouseOverPepIds: PropTypes.array,
     mouseOverPepInfo: PropTypes.object,
     mouseOverPepPos: PropTypes.array,
-    filteredPepList: PropTypes.array
+    filteredPepList: PropTypes.array,
+    openPopovers: PropTypes.array.isRequired
 };
 
 function mapStateToProps(state) {
@@ -271,7 +272,8 @@ function mapStateToProps(state) {
         mouseOverPepIds: state.plotReducer.mouseOverPepIds,
         mouseOverPepInfo: state.plotReducer.mouseOverPepInfo,
         mouseOverPepPos: state.plotReducer.mouseOverPepPos,
-        filteredPepList: state.plotReducer.filteredPepList
+        filteredPepList: state.plotReducer.filteredPepList,
+        openPopovers: state.plotReducer.openPopovers
     };
 
     return props;

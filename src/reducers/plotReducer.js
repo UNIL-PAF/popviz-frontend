@@ -1,4 +1,11 @@
-import { CHANGE_ZOOM_RANGE, MOUSE_OVER_PEP, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION , MOUSE_OVER_SEQUENCE} from '../actions/const'
+import {
+    CHANGE_ZOOM_RANGE,
+    MOUSE_OVER_PEP,
+    PROTEIN_IS_LOADED,
+    CHANGE_SAMPLE_SELECTION ,
+    MOUSE_OVER_SEQUENCE,
+    CLICK_ON_PEP
+} from '../actions/const'
 
 const defaultState = {
     zoomLeft: undefined,
@@ -18,7 +25,8 @@ const defaultState = {
         {sampleName: '9507', selected: false, description: 'HCT 32uM'}
     ],
     protein: null,
-    filteredPepList: null
+    filteredPepList: null,
+    openPopovers: []
 };
 
 export default function changePlot(state = defaultState, action = null) {
@@ -65,6 +73,21 @@ export default function changePlot(state = defaultState, action = null) {
               mouseOverPepIds: [action.id],
               mouseOverPepInfo: getPepInfo(state.filteredPepList, action.id),
               mouseOverPepPos: [action.x, action.y]
+          }
+      case CLICK_ON_PEP:
+          const addPopover = (filteredPepList, openPopovers, id, x, y) => {
+              const newPepInfo = filteredPepList.find((p) => {return p.id === id})
+              const newPopover = {
+                  id: id,
+                  x: x,
+                  y: y,
+                  pepInfo: newPepInfo
+              }
+              return openPopovers.concat(newPopover)
+          }
+          return {
+              ...state,
+              openPopovers: addPopover(state.filteredPepList, state.openPopovers, action.id, action.x, action.y)
           }
       case PROTEIN_IS_LOADED:
           return {
