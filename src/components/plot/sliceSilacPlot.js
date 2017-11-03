@@ -10,6 +10,9 @@ import * as d3 from 'd3';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
+import * as _ from 'lodash';
+import { schemeCategory20 } from 'd3-scale';
+
 import Peptide from './peptide'
 import PeptidePopOver from './peptidePopOver'
 import AminoAcidBar from './aminoAcidBar'
@@ -23,7 +26,7 @@ class SliceSilacPlot extends Component {
         this.state = {
             xScale: scaleLinear().range([0, this.props.width - this.margin.left - this.margin.right]),
             yScale: scaleLinear().range([this.props.height - this.margin.top - this.margin.bottom, 0]),
-            //colorScale: scaleLinear().domain([2,-2]).range([0,1])
+            additionalHeight: 0
         }
     }
 
@@ -32,6 +35,9 @@ class SliceSilacPlot extends Component {
 
     // set the margins
     margin = {top: 20, right: 10, bottom: 100, left: 40};
+
+    // we take first the dark colors from "schemeCategory20" and afterwards the lighter ones
+    colorSchemeArray = _.range(0, 19, 2).concat(_.range(1, 20, 2))
 
     brushend = () => {
         var s = d3.event.selection;
@@ -78,6 +84,9 @@ class SliceSilacPlot extends Component {
 
     render() {
         const {width, height, zoomLeft, zoomRight, protein, filteredPepList, mouseOverPepIds, mouseOverPepInfo, mouseOverPepPos, sampleSelection} = this.props;
+
+        // create an array with entries for every AA position
+        var aaShiftArray = []
 
         // create the array containing the peptide plot elements
         const plotPeptides = (selectedPeps, thisZoomLeft, thisZoomRight, selectedSamples) => {
@@ -132,19 +141,62 @@ class SliceSilacPlot extends Component {
         // prepare the peptide AA seuquences plot
         const plotPeptideAaSequences = (thisZoomLeft, thisZoomRight, selectedSamples) => {
 
-            return <PeptideAaSequences
-                    zoomLeft={thisZoomLeft}
-                    zoomRight={thisZoomRight}
-                    selectedSamples={selectedSamples}
-                    sampleSelection={sampleSelection}
-                    peptideSequences={protein.samples}
+            const [start, end] = [Math.floor(thisZoomLeft), Math.floor(thisZoomRight)]
+
+            const plotOneSeq = (seqInfo, sampleName, sampleColor) => {
+
+                const seq = seqInfo.sequence.split('')
+
+                // find shift and update the array
+                var maxShift = 0
+                for (var i = 0; i < seq.length; i++) {
+                    const pos = seqInfo.startPos + i - start
+                    const posVal = aaShiftArray[pos] ? aaShiftArray[pos] : 0
+                    if (posVal > maxShift) maxShift = posVal
+                    const posShift = posVal + 1
+                    aaShiftArray[pos] = posShift
+                }
+
+                return <PeptideAaSequences
+                    sampleName={sampleName}
+                    seqInfo={seqInfo}
+                    seq={seq}
+                    sampleColor={sampleColor}
+                    start={start}
+                    end={end}
+                    maxShift={maxShift}
                     xScale={this.state.xScale}
                     yPos={height - this.margin.bottom + 10}
                     yShift={10}
-                    key="pep-aa-seqs"
-            />
-        }
+                    key={'pep-aa-seq' + sampleName + seq}
+                />
 
+            }
+
+            const plotOneSample = (sampleName, thisZoomLeft, thisZoomRight) => {
+
+                const sampleIdx = _.findIndex(sampleSelection, (s) => { return s.sampleName === sampleName; })
+                const sampleColor = schemeCategory20[this.colorSchemeArray[sampleIdx]]
+
+                // keep only sequences within the zoom range
+                const seqs = protein.samples[sampleName].peptideSequences
+
+                const fltSeqs = seqs.filter((s) => {
+                    return (s.startPos > thisZoomLeft && s.startPos < thisZoomRight) || (s.endPos < thisZoomRight && s.endPos > thisZoomLeft)
+                })
+
+                const oneSeqPlot =  _.flatMap(fltSeqs, (s) => {
+                    return plotOneSeq(s, sampleName, sampleColor)
+                })
+
+                return oneSeqPlot
+            }
+
+            // loop through the selected samples
+            const peptideAaSequencesPlot =  _.flatMap(selectedSamples, (s) => plotOneSample(s, thisZoomLeft, thisZoomRight));
+            return peptideAaSequencesPlot
+
+        }
 
         // prepare the AA bar
         const plotAminAcidBar = (thisZoomLeft, thisZoomRight) => {
@@ -160,27 +212,36 @@ class SliceSilacPlot extends Component {
         }
 
         // create popover when mouse is over a peptide
-        const plotPopover = () => {
-                return <PeptidePopOver
-                    mouseOverPepInfo={mouseOverPepInfo}
-                    mouseOverPepPos={mouseOverPepPos}
-                />
+        const plotPopoverGenerator = () => {
+            return <PeptidePopOver
+                mouseOverPepInfo={mouseOverPepInfo}
+                mouseOverPepPos={mouseOverPepPos}
+            />
+        }
+
+        const mainPlot = () => {
+            const plotContent = protein ? plotContentGenerator() : null
+            const plotPopover = mouseOverPepInfo ? plotPopoverGenerator() : null
+
+            // adapt the viewPort height by calling the callback from sliceSilacPlot
+            // we only have to adapt if the maxShift is > 7
+            const maxShift = (aaShiftArray.length) ? _.max(aaShiftArray) : 0
+            const additionalHeight = (maxShift > 7) ? ((maxShift-7) * 10) : 0
+
+             return <div>
+                <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height + additionalHeight}`} width="100%" height="100%" ref={r => this.svg = r}>
+                    <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
+                    <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
+                    <g className="main-g" ref={r => this.mainG = select(r)} onDoubleClick={this.zoomOut} transform={'translate('+this.margin.left+','+this.margin.top+')'}>
+                        { plotContent }
+                    </g>
+                    { plotPopover }
+                </svg>
+            </div>
         }
 
         return (
-            <div>
-            <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%" ref={r => this.svg = r}>
-                <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
-                <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
-                <g className="main-g" ref={r => this.mainG = select(r)}
-                   onDoubleClick={this.zoomOut}
-                   transform={'translate('+this.margin.left+','+this.margin.top+')'}
-                >
-                    { protein && plotContentGenerator() }
-                </g>
-                { mouseOverPepInfo && plotPopover()}
-            </svg>
-            </div>
+            mainPlot()
         )
 
     }

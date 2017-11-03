@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as PlotActions from '../../actions'
-import { schemeCategory20 } from 'd3-scale';
-import * as _ from 'lodash';
 
 class PeptideAaSequences extends Component {
 
@@ -19,16 +17,7 @@ class PeptideAaSequences extends Component {
     }
 
     render() {
-        const { peptideSequences, selectedSamples, zoomLeft, zoomRight, xScale, yPos, yShift, sampleSelection, mouseOverSequence } = this.props;
-
-        // the sequence to plot
-        const [start, end] = [Math.floor(zoomLeft), Math.floor(zoomRight)]
-
-        // we take first the light colors from "schemeCategory20" and afterwards the darker ones
-        const colorSchemeArray = _.range(0, 19, 2).concat(_.range(1, 20, 2))
-
-        // create an array with entries for every AA position
-        var aaShiftArray = []
+        const { start, end, xScale, yPos, yShift, mouseOverSequence, sampleName, sampleColor, seqInfo, seq, maxShift } = this.props;
 
         // adapt the font size to the zoom range
         const fontSizeRatio = ((end-start) < 100) ? 100 : (end-start)
@@ -51,7 +40,7 @@ class PeptideAaSequences extends Component {
 
             return <rect
                     className="pep-aa-rect"
-                    key={sampleName + seq}
+                    key={'pep-aa-rect' + sampleName + seq}
                     x={xScale(seqInfo.startPos - 0.5)}
                     y={yPos + maxShift * yShift - fontSize/30 - highlightObj.y}
                     width={xScale(seqInfo.endPos)-xScale(seqInfo.startPos-1)}
@@ -68,7 +57,7 @@ class PeptideAaSequences extends Component {
         const plotOneSeqAa = (s, i, sampleName ,seqInfo, maxShift) => {
             return <text
                 className="pep-aa"
-                key={sampleName + seqInfo.sequence + i}
+                key={'pep-aa' + sampleName + seqInfo.sequence + i}
                 fontSize={fontSize}
                 x={xScale(seqInfo.startPos + (i))}
                 y={yPos + maxShift * yShift}
@@ -77,19 +66,7 @@ class PeptideAaSequences extends Component {
             </text>
         }
 
-        const plotOneSeq = (seqInfo, sampleName, sampleColor) => {
-
-            const seq = seqInfo.sequence.split('')
-
-            // find shift and update the array
-            var maxShift = 0
-            for(var i=0; i<seq.length; i++){
-                const pos = seqInfo.startPos + i - start
-                const posVal = aaShiftArray[pos] ? aaShiftArray[pos] : 0
-                if(posVal > maxShift) maxShift = posVal
-                const posShift = posVal + 1
-                aaShiftArray[pos] = posShift
-            }
+        const plotOneSeq = (seqInfo, sampleName, sampleColor, seq, maxShift) => {
 
             const seqAaPlots = seq.map( (s,i) => {
                 return plotOneSeqAa(s, i, sampleName, seqInfo, maxShift)
@@ -100,43 +77,23 @@ class PeptideAaSequences extends Component {
             return seqAaPlots.concat(seqRectPlot)
         }
 
-        const plotOneSample = (sampleName) => {
-
-            const sampleIdx = _.findIndex(sampleSelection, (s) => { return s.sampleName === sampleName; })
-            const sampleColor = schemeCategory20[colorSchemeArray[sampleIdx]]
-
-            // keep only sequences within the zoom range
-            const seqs = peptideSequences[sampleName].peptideSequences
-
-            const fltSeqs = seqs.filter((s) => {
-                return (s.startPos > zoomLeft && s.startPos < zoomRight) || (s.endPos < zoomRight && s.endPos > zoomLeft)
-            })
-
-            return _.flatMap(fltSeqs, (s) => {
-                return plotOneSeq(s, sampleName, sampleColor)
-            })
-        }
-
-        const plotAaBar = () => {
-            // loop through the selected samples
-            return _.flatMap(selectedSamples, (s) => plotOneSample(s))
-        }
-
         return (
-            plotAaBar()
+            plotOneSeq(seqInfo, sampleName, sampleColor, seq, maxShift)
         )
     }
 }
 
 PeptideAaSequences.propTypes = {
-    zoomLeft: PropTypes.number.isRequired,
-    zoomRight: PropTypes.number.isRequired,
+    sampleName: PropTypes.string.isRequired,
+    seqInfo: PropTypes.object.isRequired,
+    seq: PropTypes.array.isRequired,
+    sampleColor: PropTypes.string.isRequired,
+    start: PropTypes.number.isRequired,
+    end: PropTypes.number.isRequired,
+    maxShift: PropTypes.number.isRequired,
     yPos: PropTypes.number.isRequired,
     yShift: PropTypes.number.isRequired,
     xScale: PropTypes.func.isRequired,
-    peptideSequences: PropTypes.object.isRequired,
-    selectedSamples: PropTypes.array.isRequired,
-    sampleSelection: PropTypes.array.isRequired,
     mouseOverSequence: PropTypes.object
 };
 
