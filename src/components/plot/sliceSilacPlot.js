@@ -178,6 +178,10 @@ class SliceSilacPlot extends Component {
             // plot the peptide AA sequences
             finalPlotList.push(plotPeptideAaSequences(thisZoomLeft, thisZoomRight, selectedSamples))
 
+            // plot popover
+            if(mouseOverPopover) finalPlotList.push(plotPopoverGenerator(this.state.xScale.range()[1]))
+            if(openPopovers.length > 0) finalPlotList.push(plotOpenPopoversGenerator(this.state.xScale.range()[1]))
+
             return finalPlotList
         }
 
@@ -256,27 +260,28 @@ class SliceSilacPlot extends Component {
         }
 
         // create popover when mouse is over a peptide
-        const plotPopoverGenerator = () => {
+        const plotPopoverGenerator = (limitRight) => {
             return <PeptidePopOver
+                key={"pep-pop-over"}
                 popOverInfo={mouseOverPopover}
+                limitRight={limitRight}
             />
         }
 
         // plot the popovers on which we clicked
-        const plotOpenPopoversGenerator = () => {
+        const plotOpenPopoversGenerator = (limitRight) => {
             return openPopovers.map((p, i) => {
                 return <PeptidePopOver
                     popOverInfo={p}
                     removable={true}
                     key={i}
+                    limitRight={limitRight}
                 />
             });
         }
 
         const mainPlot = () => {
             const plotContent = protein ? plotContentGenerator() : null
-            const plotPopover = mouseOverPopover ? plotPopoverGenerator() : null
-            const plotOpenPopovers = (openPopovers.length > 0) ? plotOpenPopoversGenerator() : null
 
             // adapt the viewPort height by calling the callback from sliceSilacPlot
             // we only have to adapt if the maxShift is > 7
@@ -291,8 +296,6 @@ class SliceSilacPlot extends Component {
                     <g className="main-g" transform={'translate('+this.margin.left+','+this.margin.top+')'}>
                         { plotContent }
                     </g>
-                    { plotOpenPopovers }
-                    { plotPopover }
                 </svg>
             </div>
         }
