@@ -152,7 +152,12 @@ class SliceSilacPlot extends Component {
 
             // change the scale after zooming
             this.state.xScale.domain([thisZoomLeft, thisZoomRight]);
-            this.state.yScale.domain([protein.minMolWeight, protein.maxMolWeight]);
+            // add margin for y axis
+            const minMolWeightDa = Math.pow(10, protein.minMolWeight)
+            const maxMolWeightDa = Math.pow(10, protein.maxMolWeight)
+            const marginMin = Math.log10(minMolWeightDa - 1)
+            const marginMax = Math.log10(maxMolWeightDa + 10)
+            this.state.yScale.domain([marginMin, marginMax]);
 
             // create array of selected samples
             const selectedSamples = sampleSelection.filter((ss) => {
