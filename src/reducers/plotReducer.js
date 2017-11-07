@@ -134,7 +134,9 @@ export default function changePlot(state = defaultState, action = null) {
               filteredPepList: createFilteredList(action.protein.peptides, state.sampleSelection),
               protein: action.protein,
               openPopovers: [],
-              openPopoversId: []
+              openPopoversId: [],
+              zoomLeft: undefined,
+              zoomRight: undefined
           }
       case CHANGE_SAMPLE_SELECTION:
           const filterPepsAfterSampleSelection = (state, sampleSelection) => {
