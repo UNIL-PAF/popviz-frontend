@@ -92,7 +92,7 @@ class Peptide extends Component {
             <rect
                 className="psm"
                 id={pepInfo.id}
-                x={x}
+                x={ (x < 0) ? 0 : x }
                 y={y-yShift}
                 width={width}
                 height={height}
@@ -106,8 +106,6 @@ class Peptide extends Component {
 }
 
 Peptide.propTypes = {
-    zoomLeft: PropTypes.number,
-    zoomRight: PropTypes.number,
     xScale: PropTypes.func.isRequired,
     yScale: PropTypes.func.isRequired,
     samplePos: PropTypes.number.isRequired,

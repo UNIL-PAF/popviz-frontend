@@ -119,8 +119,6 @@ class SliceSilacPlot extends Component {
             return selectedPeps.map((p,i) => {
 
                 return <Peptide
-                    zoomLeft={thisZoomLeft}
-                    zoomRight={thisZoomRight}
                     xScale={this.state.xScale}
                     yScale={this.state.yScale}
                     pepInfo={p}
