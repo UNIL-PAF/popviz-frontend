@@ -177,8 +177,8 @@ class SliceSilacPlot extends Component {
             finalPlotList.push(plotPeptideAaSequences(thisZoomLeft, thisZoomRight, selectedSamples))
 
             // plot popover
-            if(mouseOverPopover) finalPlotList.push(plotPopoverGenerator(this.state.xScale.range()[1]))
             if(openPopovers.length > 0) finalPlotList.push(plotOpenPopoversGenerator(this.state.xScale.range()[1]))
+            if(mouseOverPopover) finalPlotList.push(plotPopoverGenerator(this.state.xScale.range()[1]))
 
             return finalPlotList
         }
