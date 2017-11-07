@@ -41,8 +41,6 @@ peptide-pop-over.shadow {
 }
 
 .peptide-pop-over {
-  rx:5;
-  ry:5;
   fill: white;
   fill-opacity: 0.9;
   stroke: black;

@@ -4,14 +4,15 @@ import {
     PROTEIN_IS_LOADED,
     CHANGE_SAMPLE_SELECTION ,
     MOUSE_OVER_SEQUENCE,
-    CLICK_ON_PEP
+    CLICK_ON_PEP,
+    REMOVE_POPOVER
 } from '../actions/const'
 
 const defaultState = {
     zoomLeft: undefined,
     zoomRight: undefined,
     mouseOverPepIds: null,
-    mouseOverPepInfo: null,
+    mouseOverPopover: null,
     sampleSelection: [
         {sampleName: '8967', selected: false, description: 'U2OS 4uM'},
         {sampleName: '9052', selected: false, description: 'U2OS 4uM'},
@@ -26,7 +27,8 @@ const defaultState = {
     ],
     protein: null,
     filteredPepList: null,
-    openPopovers: []
+    openPopovers: [],
+    openPopoversId: []
 };
 
 export default function changePlot(state = defaultState, action = null) {
@@ -63,16 +65,34 @@ export default function changePlot(state = defaultState, action = null) {
               filteredPepList: (state.protein) ? (createZoomedFilteredList(state.protein.peptides, state.sampleSelection, action.zoomLeft, action.zoomRight)) : null,
               zoomLeft: action.zoomLeft,
               zoomRight: action.zoomRight,
+              openPopovers: [],
+              openPopoversId: []
           }
       case MOUSE_OVER_PEP:
-          const getPepInfo = (filteredPepList, mouseOverPepId) => {
-              return filteredPepList.find((p) => {return p.id === mouseOverPepId})
+          const getPopover = (filteredPepList, mouseOverPepId, x, y) => {
+              if(! mouseOverPepId) return null;
+              if(state.openPopoversId.length > 0 && state.openPopoversId.indexOf(action.id) > -1) return null
+
+              const newPepInfo = filteredPepList.find((p) => {return p.id === mouseOverPepId})
+              const newPopover = {
+                  id: mouseOverPepId,
+                  x: x,
+                  y: y,
+                  pepInfo: newPepInfo
+              }
+              return newPopover
+          }
+          const getPopoverIds = (id) => {
+              if(state.openPopoversId.length > 0 && state.openPopoversId.indexOf(action.id) > -1){
+                  return null;
+              }else{
+                  return [id]
+              }
           }
           return {
               ...state,
-              mouseOverPepIds: [action.id],
-              mouseOverPepInfo: getPepInfo(state.filteredPepList, action.id),
-              mouseOverPepPos: [action.x, action.y]
+              mouseOverPepIds: getPopoverIds(action.id),
+              mouseOverPopover: getPopover(state.filteredPepList, action.id, action.x, action.y),
           }
       case CLICK_ON_PEP:
           const addPopover = (filteredPepList, openPopovers, id, x, y) => {
@@ -87,13 +107,34 @@ export default function changePlot(state = defaultState, action = null) {
           }
           return {
               ...state,
-              openPopovers: addPopover(state.filteredPepList, state.openPopovers, action.id, action.x, action.y)
+              openPopovers: addPopover(state.filteredPepList, state.openPopovers, action.id, action.x, action.y),
+              openPopoversId: state.openPopoversId.concat(action.id),
+              mouseOverPepIds: null,
+              mouseOverPopover: null
+          }
+      case REMOVE_POPOVER:
+          const removePopover = (id, openPopovers) => {
+              return openPopovers.filter( (p) => {
+                  return p.id !== id;
+              })
+          }
+          const removePopoverId = (id, openPopoversId) => {
+              return openPopoversId.filter( (p) => {
+                  return p !== id;
+              })
+          }
+          return {
+              ...state,
+              openPopovers: removePopover(action.id, state.openPopovers),
+              openPopoversId: removePopoverId(action.id, state.openPopoversId)
           }
       case PROTEIN_IS_LOADED:
           return {
               ...state,
               filteredPepList: createFilteredList(action.protein.peptides, state.sampleSelection),
-              protein: action.protein
+              protein: action.protein,
+              openPopovers: [],
+              openPopoversId: []
           }
       case CHANGE_SAMPLE_SELECTION:
           const filterPepsAfterSampleSelection = (state, sampleSelection) => {
@@ -111,7 +152,9 @@ export default function changePlot(state = defaultState, action = null) {
           return {
               ...state,
               sampleSelection: action.sampleSelection,
-              filteredPepList: filterPepsAfterSampleSelection(state, action.sampleSelection)
+              filteredPepList: filterPepsAfterSampleSelection(state, action.sampleSelection),
+              openPopovers: [],
+              openPopoversId: []
           }
       case MOUSE_OVER_SEQUENCE:
           const isMouseOverSeq = (sampleName, seq) => {

@@ -83,10 +83,33 @@ class SliceSilacPlot extends Component {
     }
 
     render() {
-        const {width, height, zoomLeft, zoomRight, protein, filteredPepList, mouseOverPepIds, mouseOverPepInfo, mouseOverPepPos, sampleSelection} = this.props;
+        const {
+            width,
+            height,
+            zoomLeft,
+            zoomRight,
+            protein,
+            filteredPepList,
+            mouseOverPepIds,
+            mouseOverPopover,
+            sampleSelection,
+            openPopovers,
+            openPopoversId
+        } = this.props;
 
         // create an array with entries for every AA position
         var aaShiftArray = []
+
+        // highlight the peptide which the mouse is over or a popover is opened
+        const highlightPeptide = (pepId) => {
+            if(mouseOverPepIds && mouseOverPepIds.indexOf(pepId) > -1){
+                return true
+            }
+            if(openPopoversId.length > 0 && openPopoversId.indexOf(pepId) > -1){
+                return true
+            }
+            return false
+        }
 
         // create the array containing the peptide plot elements
         const plotPeptides = (selectedPeps, thisZoomLeft, thisZoomRight, selectedSamples) => {
@@ -100,7 +123,7 @@ class SliceSilacPlot extends Component {
                     xScale={this.state.xScale}
                     yScale={this.state.yScale}
                     pepInfo={p}
-                    mouseIsOver={(mouseOverPepIds && mouseOverPepIds.indexOf(p.id) > -1)?true:false}
+                    mouseIsOver={highlightPeptide(p.id)}
                     samplePos={selectedSamples.indexOf(p.sampleName)}
                     nrSamples={nrSelectedSamples}
                     svgParent={this.svg}
@@ -214,14 +237,25 @@ class SliceSilacPlot extends Component {
         // create popover when mouse is over a peptide
         const plotPopoverGenerator = () => {
             return <PeptidePopOver
-                mouseOverPepInfo={mouseOverPepInfo}
-                mouseOverPepPos={mouseOverPepPos}
+                popOverInfo={mouseOverPopover}
             />
+        }
+
+        // plot the popovers on which we clicked
+        const plotOpenPopoversGenerator = () => {
+            return openPopovers.map((p, i) => {
+                return <PeptidePopOver
+                    popOverInfo={p}
+                    removable={true}
+                    key={i}
+                />
+            });
         }
 
         const mainPlot = () => {
             const plotContent = protein ? plotContentGenerator() : null
-            const plotPopover = mouseOverPepInfo ? plotPopoverGenerator() : null
+            const plotPopover = mouseOverPopover ? plotPopoverGenerator() : null
+            const plotOpenPopovers = (openPopovers.length > 0) ? plotOpenPopoversGenerator() : null
 
             // adapt the viewPort height by calling the callback from sliceSilacPlot
             // we only have to adapt if the maxShift is > 7
@@ -236,6 +270,7 @@ class SliceSilacPlot extends Component {
                     <g className="main-g" transform={'translate('+this.margin.left+','+this.margin.top+')'}>
                         { plotContent }
                     </g>
+                    { plotOpenPopovers }
                     { plotPopover }
                 </svg>
             </div>
@@ -257,10 +292,10 @@ SliceSilacPlot.propTypes = {
     protein: PropTypes.object,
     sampleSelection: PropTypes.array.isRequired,
     mouseOverPepIds: PropTypes.array,
-    mouseOverPepInfo: PropTypes.object,
-    mouseOverPepPos: PropTypes.array,
+    mouseOverPopover: PropTypes.object,
     filteredPepList: PropTypes.array,
-    openPopovers: PropTypes.array.isRequired
+    openPopovers: PropTypes.array.isRequired,
+    openPopoversId: PropTypes.array.isRequired
 };
 
 function mapStateToProps(state) {
@@ -270,10 +305,10 @@ function mapStateToProps(state) {
         protein: state.plotReducer.protein,
         sampleSelection: state.plotReducer.sampleSelection,
         mouseOverPepIds: state.plotReducer.mouseOverPepIds,
-        mouseOverPepInfo: state.plotReducer.mouseOverPepInfo,
-        mouseOverPepPos: state.plotReducer.mouseOverPepPos,
+        mouseOverPopover: state.plotReducer.mouseOverPopover,
         filteredPepList: state.plotReducer.filteredPepList,
-        openPopovers: state.plotReducer.openPopovers
+        openPopovers: state.plotReducer.openPopovers,
+        openPopoversId: state.plotReducer.openPopoversId
     };
 
     return props;

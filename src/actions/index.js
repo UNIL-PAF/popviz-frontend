@@ -37,3 +37,7 @@ export function clickOnPep(id, x, y) {
 export function mouseOverSequence(sampleName, sequence){
     return { type: types.MOUSE_OVER_SEQUENCE, sampleName: sampleName, sequence: sequence}
 }
+
+export function removePopover(id){
+    return { type: types.REMOVE_POPOVER, id: id }
+}
