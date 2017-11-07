@@ -17,6 +17,7 @@ import Peptide from './peptide'
 import PeptidePopOver from './peptidePopOver'
 import AminoAcidBar from './aminoAcidBar'
 import PeptideAaSequences from './peptideAaSequences'
+import TheoProtWeight from './theoProtWeight'
 
 class SliceSilacPlot extends Component {
 
@@ -132,6 +133,18 @@ class SliceSilacPlot extends Component {
             })
         }
 
+        // plot the theoretical weight line
+        const plotTheoProtWeight = (theoWeight, thisZoomLeft, thisZoomRight, yScale, xScale) => {
+            return <TheoProtWeight
+                key={"theoProtWeight"}
+                protWeight={theoWeight}
+                zoomLeft={thisZoomLeft}
+                zoomRight={thisZoomRight}
+                yScale={yScale}
+                xScale={xScale}
+                />
+        }
+
         // create the plot area
         const plotContentGenerator = () => {
             const thisZoomLeft = (zoomLeft === undefined) ? 1 : zoomLeft;
@@ -148,8 +161,11 @@ class SliceSilacPlot extends Component {
                 return ss.sampleName
             })
 
+            // plot the theoretical prot weight
+            var finalPlotList = [(plotTheoProtWeight(protein.theoMolWeightLog10, thisZoomLeft, thisZoomRight, this.state.yScale, this.state.xScale))]
+
             // construct and concat the different elements of the plot
-            var finalPlotList = plotPeptides(filteredPepList, thisZoomLeft, thisZoomRight, selectedSamples)
+            finalPlotList = finalPlotList.concat(plotPeptides(filteredPepList, thisZoomLeft, thisZoomRight, selectedSamples))
 
             // plot the AA bar
             finalPlotList.push(plotAminAcidBar(thisZoomLeft, thisZoomRight));

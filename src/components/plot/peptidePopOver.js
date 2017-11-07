@@ -8,25 +8,31 @@ import * as ControlActions from '../../actions'
 import { bindActionCreators } from 'redux';
 
 const defaultRemoveCrossColor = "grey"
+const defaultRemoveRectColor = "white"
 
 class PeptidePopOver extends Component {
-
-
 
     constructor(props) {
         super(props)
 
         this.state = {
-            removeCrossColor: defaultRemoveCrossColor
+            removeCrossColor: defaultRemoveCrossColor,
+            removeRectColor: defaultRemoveRectColor
         }
     }
 
     onRemoveEnter = () => {
-        this.setState({removeCrossColor: "red"})
+        this.setState({
+            removeCrossColor: "white",
+            removeRectColor: "red"
+        })
     }
 
     onRemoveLeave = () => {
-        this.setState({removeCrossColor: defaultRemoveCrossColor})
+        this.setState({
+            removeCrossColor: defaultRemoveCrossColor,
+            removeRectColor: defaultRemoveRectColor
+        })
     }
 
     render() {
@@ -82,24 +88,22 @@ class PeptidePopOver extends Component {
         }
 
         const plotRemoveButton = () => {
-            const thisWidth = 5
-            const thisHeight = 5
-            const thisX = (x+popupShiftX+97+seqLengthCorr-thisWidth)
+            const thisWidth = 3
+            const thisHeight = 3
+            const thisX = (x+popupShiftX+95+seqLengthCorr-thisWidth)
             const thisY = (y+popupShiftY+8-thisHeight)
 
             return <g
                 className="peptide-pop-over-close"
                 onClick={() => this.props.actions.removePopover(popOverInfo.id) }
-                cursor="pointer"
                 onMouseEnter={ () => this.onRemoveEnter()}
                 onMouseLeave={ () => this.onRemoveLeave()}
             >
-                <rect
-                    x={thisX}
-                    y={thisY}
-                    width={thisWidth}
-                    height={thisHeight}
-                    fill="white"
+                <circle
+                    cx={thisX + thisWidth/2}
+                    cy={thisY + thisHeight/2}
+                    r={thisWidth+0.5}
+                    fill={this.state.removeRectColor}
                     fillOpacity={0.9}
                 />
 
@@ -109,6 +113,7 @@ class PeptidePopOver extends Component {
                     x2={thisX+thisWidth}
                     y2={thisY+thisHeight}
                     stroke={this.state.removeCrossColor}
+                    strokeLinecap="round"
                 />
 
                 <line
@@ -117,6 +122,7 @@ class PeptidePopOver extends Component {
                     x2={thisX}
                     y2={thisY+thisHeight}
                     stroke={this.state.removeCrossColor}
+                    strokeLinecap="round"
                 />
 
             </g>

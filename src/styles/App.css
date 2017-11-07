@@ -55,6 +55,12 @@ peptide-pop-over.shadow {
     font-weight:bold;
 }
 
+.theo-prot-weight {
+    stroke-dasharray: 0.9;
+    stroke-width: 0.5;
+    stroke: darkgrey;
+}
+
 .y-axis {
     font-size: 50%;
     font-weight: lighter;
