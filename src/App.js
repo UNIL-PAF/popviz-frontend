@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import './styles/App.css';
 import { Navbar, Nav } from 'react-bootstrap'
+
 import sibLogo from './images/sib_logo_2.png';
+
 import LoadProteinInputs from './components/controls/loadProteinInputs'
 import SelectSamples from './components/controls/selectSamples'
 import SliceSilacPlot from './components/plot/sliceSilacPlot'
+import ProteinTitle from './components/plot/proteinTitle'
 
 class App extends Component {
   render() {
@@ -31,6 +34,8 @@ class App extends Component {
                   </Nav>
               </Navbar.Collapse>
           </Navbar>
+
+          <ProteinTitle />
 
         <div className="App-plot-area">
             <SliceSilacPlot width={800} height={300}/>

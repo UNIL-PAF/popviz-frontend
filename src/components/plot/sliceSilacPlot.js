@@ -35,7 +35,7 @@ class SliceSilacPlot extends Component {
     proteinAC = undefined
 
     // set the margins
-    margin = {top: 20, right: 10, bottom: 100, left: 40};
+    margin = {top: 5, right: 10, bottom: 100, left: 40};
 
     // we take first the dark colors from "schemeCategory20" and afterwards the lighter ones
     colorSchemeArray = _.range(0, 19, 2).concat(_.range(1, 20, 2))
@@ -212,7 +212,7 @@ class SliceSilacPlot extends Component {
                     end={end}
                     maxShift={maxShift}
                     xScale={this.state.xScale}
-                    yPos={height - this.margin.bottom + 10}
+                    yPos={height - this.margin.bottom + 20}
                     yShift={10}
                     key={'pep-aa-seq' + sampleName + seq}
                 />
@@ -252,7 +252,7 @@ class SliceSilacPlot extends Component {
                     zoomRight={thisZoomRight}
                     sequence={protein.sequence}
                     xScale={this.state.xScale}
-                    yPos={height - this.margin.bottom + 1}
+                    yPos={height - this.margin.bottom + 11}
                     key="amino-acid-bar"
                 />
         }
