@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './styles/App.css';
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, Row, Col } from 'react-bootstrap'
 
 import sibLogo from './images/sib_logo_2.png';
 
@@ -8,6 +8,7 @@ import LoadProteinInputs from './components/controls/loadProteinInputs'
 import SelectSamples from './components/controls/selectSamples'
 import SliceSilacPlot from './components/plot/sliceSilacPlot'
 import ProteinTitle from './components/plot/proteinTitle'
+import Legends from './components/plot/legends'
 
 class App extends Component {
   render() {
@@ -37,9 +38,14 @@ class App extends Component {
 
           <ProteinTitle />
 
-        <div className="App-plot-area">
-            <SliceSilacPlot width={800} height={300}/>
-        </div>
+        <Row className="App-plot-area">
+            <Col md={11}>
+                <SliceSilacPlot width={800} height={300}/>
+            </Col>
+            <Col md={1} className="pull-left">
+                <Legends width={72} height={300}/>
+            </Col>
+        </Row>
 
       </div>
     );

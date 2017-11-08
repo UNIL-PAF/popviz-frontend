@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
 import * as _ from 'lodash';
-import { schemeCategory20 } from 'd3-scale';
+import { sampleColor } from './colorSettings'
 
 import Peptide from './peptide'
 import PeptidePopOver from './peptidePopOver'
@@ -36,9 +36,6 @@ class SliceSilacPlot extends Component {
 
     // set the margins
     margin = {top: 5, right: 10, bottom: 100, left: 40};
-
-    // we take first the dark colors from "schemeCategory20" and afterwards the lighter ones
-    colorSchemeArray = _.range(0, 19, 2).concat(_.range(1, 20, 2))
 
     brushend = () => {
         var s = d3.event.selection;
@@ -221,9 +218,6 @@ class SliceSilacPlot extends Component {
 
             const plotOneSample = (sampleName, thisZoomLeft, thisZoomRight) => {
 
-                const sampleIdx = _.findIndex(sampleSelection, (s) => { return s.sampleName === sampleName; })
-                const sampleColor = schemeCategory20[this.colorSchemeArray[sampleIdx]]
-
                 // keep only sequences within the zoom range
                 const seqs = protein.samples[sampleName].peptideSequences
 
@@ -231,8 +225,10 @@ class SliceSilacPlot extends Component {
                     return (s.startPos > thisZoomLeft && s.startPos < thisZoomRight) || (s.endPos < thisZoomRight && s.endPos > thisZoomLeft)
                 })
 
+                const sampleIdx = _.findIndex(sampleSelection, (s) => { return s.sampleName === sampleName; })
+
                 const oneSeqPlot =  _.flatMap(fltSeqs, (s) => {
-                    return plotOneSeq(s, sampleName, sampleColor)
+                    return plotOneSeq(s, sampleName, sampleColor(sampleIdx))
                 })
 
                 return oneSeqPlot

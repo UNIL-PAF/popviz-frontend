@@ -3,11 +3,12 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import * as ControlActions from '../../actions'
+import { ratioColorScale } from './colorSettings'
 
 class Peptide extends Component {
 
@@ -20,8 +21,7 @@ class Peptide extends Component {
         this.state = this.setDefaultRect();
     }
 
-    // prepare the coloRange
-    colorScale = scaleLinear().domain([-2, 0, 2]).range(["green", "lightgrey", "red"]);
+
 
     // limit ratio range to -2 and 2
     limitRatioRange = (ratio) => {
@@ -79,7 +79,7 @@ class Peptide extends Component {
         const xDiff = xEnd - xStart;
 
         // get the color according to its ratio
-        const ratioCol = this.colorScale(this.limitRatioRange(pepInfo.log2ratio))
+        const ratioCol = ratioColorScale(this.limitRatioRange(pepInfo.log2ratio))
 
         // special settings if mouse is over this peptide
         const width = (mouseIsOver) ? xDiff : xDiff / nrSamples;
