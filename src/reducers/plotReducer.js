@@ -101,7 +101,7 @@ export default function changePlot(state = defaultState, action = null) {
               ...state,
               mouseOverPepIds: getPopoverIds(action.id),
               mouseOverPopover: newPopOver,
-              highlightPepSeq: action.id ? getHighlightPepSeq(newPopOver) : null
+              highlightPepSeq: newPopOver ? getHighlightPepSeq(newPopOver) : null
           }
       case CLICK_ON_PEP:
           const addPopover = (filteredPepList, openPopovers, id, x, y) => {

@@ -102,7 +102,7 @@ class Legends extends Component {
             })
 
             return <g>
-                <text x={x} y={y} fontFamily="sans-serif" fontSize="8px">Selected samples</text>
+                <text x={x} y={y} fontFamily="sans-serif" fontSize="8px">Samples</text>
                 { samplePlots }
             </g>
 
