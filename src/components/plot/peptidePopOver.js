@@ -49,9 +49,10 @@ class PeptidePopOver extends Component {
         const width = 100 + seqLengthCorr
 
         // if the popover lies outside the plot area, we place it left of the mouse position
-        if(x+width > limitRight){
-            x = x-width-50
-        }
+        if(x+width > limitRight)x = x-width-50
+        if(y < 0) y = 0
+
+
 
         const infoToSvgText = (pepInfo, x,y) => {
             var i=1;
