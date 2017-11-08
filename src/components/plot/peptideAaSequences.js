@@ -17,7 +17,7 @@ class PeptideAaSequences extends Component {
     }
 
     render() {
-        const { start, end, xScale, yPos, yShift, mouseOverSequence, sampleName, sampleColor, seqInfo, seq, maxShift } = this.props;
+        const { start, end, xScale, yPos, yShift, mouseOverSequence, sampleName, sampleColor, seqInfo, seq, maxShift, highlight } = this.props;
 
         // adapt the font size to the zoom range
         const fontSizeRatio = ((end-start) < 100) ? 100 : (end-start)
@@ -25,7 +25,7 @@ class PeptideAaSequences extends Component {
 
         const plotSeqRect = (seqInfo, sampleName, maxShift, sampleColor) => {
 
-            const highlight = (bool) => {
+            const highlightFormat = (bool) => {
                 return {
                     height: (bool ? 2 : 0),
                     y: (bool ? 1 : 0),
@@ -35,8 +35,8 @@ class PeptideAaSequences extends Component {
             }
 
             const seq = seqInfo.sequence
-            const doHighlight = mouseOverSequence && mouseOverSequence.sampleName === sampleName && mouseOverSequence.sequence === seq
-            const highlightObj = highlight(doHighlight)
+            const doHighlight = (mouseOverSequence && mouseOverSequence.sampleName === sampleName && mouseOverSequence.sequence === seq) || highlight
+            const highlightObj = highlightFormat(doHighlight)
 
             return <rect
                     className="pep-aa-rect"
@@ -94,7 +94,8 @@ PeptideAaSequences.propTypes = {
     yPos: PropTypes.number.isRequired,
     yShift: PropTypes.number.isRequired,
     xScale: PropTypes.func.isRequired,
-    mouseOverSequence: PropTypes.object
+    mouseOverSequence: PropTypes.object,
+    highlight: PropTypes.bool.isRequired
 };
 
 

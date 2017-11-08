@@ -89,10 +89,19 @@ export default function changePlot(state = defaultState, action = null) {
                   return [id]
               }
           }
+          const newPopOver = getPopover(state.filteredPepList, action.id, action.x, action.y)
+          const getHighlightPepSeq = (newPopOver) => {
+              return {
+                  sampleName: newPopOver.pepInfo.sampleName,
+                  start: newPopOver.pepInfo.startPos,
+                  end: newPopOver.pepInfo.endPos
+              }
+          }
           return {
               ...state,
               mouseOverPepIds: getPopoverIds(action.id),
-              mouseOverPopover: getPopover(state.filteredPepList, action.id, action.x, action.y),
+              mouseOverPopover: newPopOver,
+              highlightPepSeq: action.id ? getHighlightPepSeq(newPopOver) : null
           }
       case CLICK_ON_PEP:
           const addPopover = (filteredPepList, openPopovers, id, x, y) => {
@@ -110,7 +119,8 @@ export default function changePlot(state = defaultState, action = null) {
               openPopovers: addPopover(state.filteredPepList, state.openPopovers, action.id, action.x, action.y),
               openPopoversId: state.openPopoversId.concat(action.id),
               mouseOverPepIds: null,
-              mouseOverPopover: null
+              mouseOverPopover: null,
+              highlightPepSeq: null
           }
       case REMOVE_POPOVER:
           const removePopover = (id, openPopovers) => {
@@ -180,7 +190,8 @@ export default function changePlot(state = defaultState, action = null) {
           return {
               ...state,
               mouseOverSequence: isMouseOverSeq(action.sampleName, action.sequence),
-              mouseOverPepIds: findPepIds(action.sampleName, action.sequence, state.filteredPepList)
+              mouseOverPepIds: findPepIds(action.sampleName, action.sequence, state.filteredPepList),
+              highlightPepSeq: null
           }
     default:
       return state

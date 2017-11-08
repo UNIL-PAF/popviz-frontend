@@ -92,7 +92,8 @@ class SliceSilacPlot extends Component {
             mouseOverPopover,
             sampleSelection,
             openPopovers,
-            openPopoversId
+            openPopoversId,
+            highlightPepSeq
         } = this.props;
 
         // create an array with entries for every AA position
@@ -200,9 +201,14 @@ class SliceSilacPlot extends Component {
                     aaShiftArray[pos] = posShift
                 }
 
+                const highlight = ( highlightPepSeq && highlightPepSeq.sampleName === sampleName &&
+                                    highlightPepSeq.start ===  seqInfo.startPos &&
+                                    highlightPepSeq.end === seqInfo.endPos) ? true : false
+
                 return <PeptideAaSequences
                     sampleName={sampleName}
                     seqInfo={seqInfo}
+                    highlight={highlight}
                     seq={seq}
                     sampleColor={sampleColor}
                     start={start}
@@ -313,7 +319,8 @@ SliceSilacPlot.propTypes = {
     mouseOverPopover: PropTypes.object,
     filteredPepList: PropTypes.array,
     openPopovers: PropTypes.array.isRequired,
-    openPopoversId: PropTypes.array.isRequired
+    openPopoversId: PropTypes.array.isRequired,
+    highlightPepSeq: PropTypes.object
 };
 
 function mapStateToProps(state) {
@@ -326,7 +333,8 @@ function mapStateToProps(state) {
         mouseOverPopover: state.plotReducer.mouseOverPopover,
         filteredPepList: state.plotReducer.filteredPepList,
         openPopovers: state.plotReducer.openPopovers,
-        openPopoversId: state.plotReducer.openPopoversId
+        openPopoversId: state.plotReducer.openPopoversId,
+        highlightPepSeq: state.plotReducer.highlightPepSeq
     };
 
     return props;
