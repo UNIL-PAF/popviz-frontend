@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import { NavDropdown, FormGroup, FormControl } from 'react-bootstrap'
 
+import { sampleColor } from '../plot/colorSettings'
 import * as ControlActions from '../../actions'
 
 class SelectSamples extends Component {
@@ -71,12 +72,22 @@ class SelectSamples extends Component {
                     <span className="sample-menu-item">
                         <input type="checkbox" id={'checkbox-'+ss.sampleName} value={ss.sampleName} checked={ss.selected} onChange={this.changeSelection}/>
                     </span>
-                        <span className="sample-menu-item">
+                    <span className="sample-menu-item">
+                        <svg height={8} width={8}>
+                            <circle
+                                cx={4}
+                                cy={4}
+                                r={4}
+                                fill={sampleColor(i)}
+                            />
+                        </svg>
+                    </span>
+                    <span className="sample-menu-item">
                         {ss.sampleName}
-                        </span>
-                        <span className="sample-menu-item">
+                    </span>
+                    <span className="sample-menu-item">
                         <em>{ss.description}</em>
-                        </span>
+                    </span>
                 </div>
             })
         }
