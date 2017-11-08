@@ -62,8 +62,8 @@ class PeptidePopOver extends Component {
                 'Sequence': pepInfo.aminoAcidBefore + '.' + pepInfo.sequence + '.' + pepInfo.aminoAcidAfter,
                 'Start pos': pepInfo.startPos,
                 'End pos': pepInfo.endPos,
-                'Mol weight': pepInfo.molWeight,
-                'H/L Ratio (log2)': pepInfo.log2ratio,
+                'Mol weight': Math.pow(10, pepInfo.molWeight).toFixed(2) + ' kDa',
+                'H/L Ratio (log2)': pepInfo.log2ratio.toFixed(2),
                 'Count': pepInfo.ratioCount
             }
 
@@ -146,7 +146,7 @@ class PeptidePopOver extends Component {
                     ry="5"
                     width={width}
                     height="60" />
-                {infoToSvgText(popOverInfo.pepInfo, x, y)}
+                {infoToSvgText(popOverInfo.pepInfo, x, y+3)}
                 { removable && plotRemoveButton()}
             </g>
         )

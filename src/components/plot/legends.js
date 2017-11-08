@@ -9,7 +9,6 @@ import { ratioColorScale, sampleColor } from './colorSettings'
 
 class Legends extends Component {
 
-
     render() {
         const { width, height, sampleSelection, mouseOverSequence } = this.props;
 
