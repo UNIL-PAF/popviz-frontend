@@ -8,11 +8,14 @@ export function loadProtein(proteinAC) {
   return { type: types.LOAD_PROTEIN, proteinAC: proteinAC }
 }
 
-
-
 export function changeSampleSelection(sampleSelection){
     return { type: types.CHANGE_SAMPLE_SELECTION, sampleSelection: sampleSelection}
 }
+
+export function filterPsms(filters){
+    return { type: types.FILTER_PSMS, filters: filters}
+}
+
 
 /**
  *  "plot" actions

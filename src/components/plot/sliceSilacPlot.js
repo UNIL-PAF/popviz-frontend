@@ -91,9 +91,11 @@ class SliceSilacPlot extends Component {
             mouseOverPepIds,
             mouseOverPopover,
             sampleSelection,
+            selectedSamples,
             openPopovers,
             openPopoversId,
-            highlightPepSeq
+            highlightPepSeq,
+            filteredPepSeqs
         } = this.props;
 
         // create an array with entries for every AA position
@@ -155,13 +157,6 @@ class SliceSilacPlot extends Component {
             const marginMax = Math.log10(maxMolWeightDa + 10)
             this.state.yScale.domain([marginMin, marginMax]);
 
-            // create array of selected samples
-            const selectedSamples = sampleSelection.filter((ss) => {
-                return ss.selected;
-            }).map((ss) => {
-                return ss.sampleName
-            })
-
             // plot the theoretical prot weight
             var finalPlotList = [(plotTheoProtWeight(protein.theoMolWeightLog10, thisZoomLeft, thisZoomRight, this.state.yScale, this.state.xScale))]
 
@@ -222,16 +217,13 @@ class SliceSilacPlot extends Component {
 
             }
 
-            const plotOneSample = (sampleName, thisZoomLeft, thisZoomRight) => {
+            const plotOneSample = (sampleName) => {
 
-                // keep only sequences within the zoom range
-                const seqs = protein.samples[sampleName].peptideSequences
+                const fltSeqs = filteredPepSeqs[sampleName]
 
-                const fltSeqs = seqs.filter((s) => {
-                    return (s.startPos > thisZoomLeft && s.startPos < thisZoomRight) || (s.endPos < thisZoomRight && s.endPos > thisZoomLeft)
-                })
-
+                // get the sampleIdx for the right coloring
                 const sampleIdx = _.findIndex(sampleSelection, (s) => { return s.sampleName === sampleName; })
+
 
                 const oneSeqPlot =  _.flatMap(fltSeqs, (s) => {
                     return plotOneSeq(s, sampleName, sampleColor(sampleIdx))
@@ -320,7 +312,9 @@ SliceSilacPlot.propTypes = {
     filteredPepList: PropTypes.array,
     openPopovers: PropTypes.array.isRequired,
     openPopoversId: PropTypes.array.isRequired,
-    highlightPepSeq: PropTypes.object
+    highlightPepSeq: PropTypes.object,
+    filteredPepSeqs: PropTypes.object,
+    selectedSamples: PropTypes.array
 };
 
 function mapStateToProps(state) {
@@ -334,7 +328,9 @@ function mapStateToProps(state) {
         filteredPepList: state.plotReducer.filteredPepList,
         openPopovers: state.plotReducer.openPopovers,
         openPopoversId: state.plotReducer.openPopoversId,
-        highlightPepSeq: state.plotReducer.highlightPepSeq
+        highlightPepSeq: state.plotReducer.highlightPepSeq,
+        filteredPepSeqs: state.plotReducer.filteredPepSeqs,
+        selectedSamples: state.plotReducer.selectedSamples
     };
 
     return props;

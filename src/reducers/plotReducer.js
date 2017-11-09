@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import {
     CHANGE_ZOOM_RANGE,
     MOUSE_OVER_PEP,
@@ -5,7 +7,8 @@ import {
     CHANGE_SAMPLE_SELECTION ,
     MOUSE_OVER_SEQUENCE,
     CLICK_ON_PEP,
-    REMOVE_POPOVER
+    REMOVE_POPOVER,
+    FILTER_PSMS
 } from '../actions/const'
 
 const defaultState = {
@@ -27,21 +30,24 @@ const defaultState = {
     ],
     protein: null,
     filteredPepList: null,
+    filteredPepSeqs: null,
     openPopovers: [],
-    openPopoversId: []
+    openPopoversId: [],
+    filters: []
 };
 
 export default function changePlot(state = defaultState, action = null) {
 
-    // filter the peptide list by selected samples
-    const createFilteredList = (peptides, sampleSelection) => {
-        // create array of selected samples
-        const selectedSamples = sampleSelection.filter((ss) => {
+    const computeSelectedSamples = (sampleSelection) => {
+        return sampleSelection.filter((ss) => {
             return ss.selected;
         }).map((ss) => {
             return ss.sampleName
         })
+    }
 
+    // filter the peptide list by selected samples
+    const createFilteredList = (peptides, selectedSamples) => {
         // render only peptides from selected samples
         return peptides.filter((p) => {
             return selectedSamples.indexOf(p.sampleName) >= 0;
@@ -49,20 +55,63 @@ export default function changePlot(state = defaultState, action = null) {
     }
 
     // filter peptides list by selected samples and its zoom range
-    const createZoomedFilteredList = (peptides, sampleSelection, zoomLeft, zoomRight) =>{
+    const createZoomedFilteredList = (peptides, selectedSamples, zoomLeft, zoomRight) =>{
         // render only peptides within the zoom range
         const filteredPeps = peptides.filter( (p) => {
             return (p.endPos > zoomLeft && p.endPos < zoomRight) || (p.startPos > zoomLeft && p.startPos < zoomRight);
         });
 
-        return createFilteredList(filteredPeps, sampleSelection)
+        return createFilteredList(filteredPeps, selectedSamples)
+    }
+
+    // filter by a given filter (e.g. on the H/L ratios)
+    const createZoomedFilteredListWithFilters = (peptides, selectedSamples, zoomLeft, zoomRight, filters) => {
+        const filteredPeps = (zoomLeft && zoomRight) ? createZoomedFilteredList(peptides, selectedSamples, zoomLeft, zoomRight) : createFilteredList(peptides, selectedSamples)
+
+        const filterWithFilter = (peps, filters) => {
+            return peps.filter( p => {
+                const filterOk = filters.map( (f) => {
+                    return  p.log2ratio >= f.filterRatioMin && p.log2ratio <= f.filterRatioMax
+                })
+                return filterOk.some( f => {return f})
+            })
+        }
+        return (filters.length) ? filterWithFilter(filteredPeps, filters) : filteredPeps
+    }
+
+    const filterPepSeqs = (samples, filteredPepList, selectedSamples, zoomLeft, zoomRight) => {
+
+        // filter by selected samples
+        const samplesFlt = _.pick(samples, selectedSamples)
+
+        // keep only sequences within the zoom range
+        const filterByZoom = (seqs, zoomLeft, zoomRight) => seqs.filter((s) => {
+            return (s.startPos > zoomLeft && s.startPos < zoomRight) || (s.endPos < zoomRight && s.endPos > zoomLeft)
+        })
+
+        const samplesZoomFlt = (zoomLeft && zoomRight) ? filterByZoom(samplesFlt, zoomLeft, zoomRight) : samplesFlt
+
+        const validPeps = filteredPepList.map( p => {
+            return p.sampleName + p.sequence + p.startPos
+        })
+
+        // keep only sequences which appear in the filteredPepList
+        const uniqueSeqs = _.mapValues(samplesZoomFlt, (s, sampleName) => {
+            return s.peptideSequences.filter( ps => {
+                return validPeps.indexOf(sampleName+ps.sequence + ps.startPos) > -1
+            })
+        })
+
+        return uniqueSeqs
     }
 
   switch (action.type) {
       case CHANGE_ZOOM_RANGE:
+          const filteredPepList_changeZoomRange = (state.protein) ? (createZoomedFilteredListWithFilters(state.protein.peptides, state.selectedSamples, action.zoomLeft, action.zoomRight, state.filters)) : null
           return  {
               ...state,
-              filteredPepList: (state.protein) ? (createZoomedFilteredList(state.protein.peptides, state.sampleSelection, action.zoomLeft, action.zoomRight)) : null,
+              filteredPepList: filteredPepList_changeZoomRange,
+              filteredPepSeqs: (state.protein) ? filterPepSeqs(state.protein.samples, filteredPepList_changeZoomRange, state.selectedSamples) : null,
               zoomLeft: action.zoomLeft,
               zoomRight: action.zoomRight,
               openPopovers: [],
@@ -139,34 +188,43 @@ export default function changePlot(state = defaultState, action = null) {
               openPopoversId: removePopoverId(action.id, state.openPopoversId)
           }
       case PROTEIN_IS_LOADED:
+          const selectedSamples = computeSelectedSamples(state.sampleSelection)
+          const filteredPepList = createZoomedFilteredListWithFilters(action.protein.peptides, selectedSamples, undefined, undefined, state.filters)
+
           return {
               ...state,
-              filteredPepList: createFilteredList(action.protein.peptides, state.sampleSelection),
+              filteredPepList: filteredPepList,
+              filteredPepSeqs: filterPepSeqs(action.protein.samples, filteredPepList, selectedSamples),
               protein: action.protein,
+              selectedSamples: selectedSamples,
               openPopovers: [],
               openPopoversId: [],
               zoomLeft: undefined,
               zoomRight: undefined
           }
       case CHANGE_SAMPLE_SELECTION:
-          const filterPepsAfterSampleSelection = (state, sampleSelection) => {
-            if(state.protein){
-                if(state.zoomLeft && state.zoomRight){
-                    return createZoomedFilteredList(state.protein.peptides, sampleSelection, state.zoomLeft, state.zoomRight)
-                }else{
-                    return createFilteredList(state.protein.peptides, sampleSelection)
-                }
-            }else{
-                return null
-            }
-          }
+          const selectedSamples2 = computeSelectedSamples(action.sampleSelection)
+          const filteredPepList2 = state.protein ? createZoomedFilteredListWithFilters(state.protein.peptides, selectedSamples2, state.zoomLeft, state.zoomRight, state.filters) : null
 
           return {
               ...state,
               sampleSelection: action.sampleSelection,
-              filteredPepList: filterPepsAfterSampleSelection(state, action.sampleSelection),
+              filteredPepList: filteredPepList2,
+              filteredPepSeqs: state.protein ? filterPepSeqs(state.protein.samples, filteredPepList2, selectedSamples2): null,
+              selectedSamples: selectedSamples2,
               openPopovers: [],
               openPopoversId: []
+          }
+      case FILTER_PSMS:
+          const filteredPepList3 = state.protein ? createZoomedFilteredListWithFilters(state.protein.peptides, state.selectedSamples, state.zoomLeft, state.zoomRight, action.filters) : null
+
+          return {
+              ...state,
+              filteredPepList: filteredPepList3,
+              filteredPepSeqs: state.protein ? filterPepSeqs(state.protein.samples, filteredPepList3, state.selectedSamples): null,
+              openPopovers: [],
+              openPopoversId: [],
+              filters: action.filters
           }
       case MOUSE_OVER_SEQUENCE:
           const isMouseOverSeq = (sampleName, seq) => {

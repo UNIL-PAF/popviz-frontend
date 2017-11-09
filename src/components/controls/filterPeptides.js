@@ -4,10 +4,8 @@ import React, {
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as _ from 'lodash';
 import { NavDropdown, Button } from 'react-bootstrap'
 
-import { sampleColor } from '../plot/colorSettings'
 import * as ControlActions from '../../actions'
 
 class FilterPeptides extends Component {
@@ -18,10 +16,10 @@ class FilterPeptides extends Component {
         this.state = {
             filterRatio1: false,
             filterRatio2: false,
-            minFilterRatio1: -4,
-            maxFilterRatio1: -3,
-            minFilterRatio2: 0.7,
-            maxFilterRatio2: 1,
+            minFilterRatio1: '',
+            maxFilterRatio1: -1,
+            minFilterRatio2: 1,
+            maxFilterRatio2: '',
             menuOpen: false
         };
     }
@@ -58,8 +56,15 @@ class FilterPeptides extends Component {
         }
 
         const filterRatios = [1,2].map( idx => {
-            if(this.state['filterRatio' + idx] && checkValues(this.state['minFilterRatio' + idx]) && checkValues(this.state['maxFilterRatio' + idx])){
-                return {filterRatioMin: this.state['minFilterRatio' + idx], filterRatioMax: this.state['maxFilterRatio' + idx]}
+            const filterRatioMin = this.state['minFilterRatio' + idx]
+            const filterRatioMax = this.state['maxFilterRatio' + idx]
+
+            if(this.state['filterRatio' + idx] && checkValues(filterRatioMin) && checkValues(filterRatioMax)){
+                // set ridicule high values in case of missing values => for the filter this means that any ratio is OK
+                const filterRatioMinCorr = (filterRatioMin) ? Number(filterRatioMin) : -1000000
+                const filterRatioMaxCorr = (filterRatioMax) ? Number(filterRatioMax) : 1000000
+
+                return {filterRatioMin: filterRatioMinCorr, filterRatioMax: filterRatioMaxCorr}
             }else{
                 return null
             }
@@ -67,23 +72,10 @@ class FilterPeptides extends Component {
 
         const validFilterRatios = filterRatios.filter( (f) => {return f} )
 
-        if(validFilterRatios.length){
-            console.log(validFilterRatios)
-        }
+        this.props.actions.filterPsms(validFilterRatios);
     }
 
     render() {
-        const {sampleSelection} = this.props;
-
-        const renderSampleGroups = () => {
-            const desc = _.map(sampleSelection, 'description')
-            const uniqDesc = _.uniq(desc)
-
-            return uniqDesc.map( d => {
-                return <option key={d} value={d}>{d}</option>
-            })
-        }
-
         const renderRatioRange = (idx) => {
 
             const filterRatioState = this.state['filterRatio' + idx]
@@ -114,7 +106,7 @@ class FilterPeptides extends Component {
 
         return (
             <NavDropdown title="Filter" id="basic-nav-dropdown" onToggle={this.toggleMenu} open={this.state.menuOpen}>
-                <div className="sample-menu-item ratio-filter-title"><strong>Filter by H/L ratios (log2)</strong></div>
+                <div className="sample-menu-item ratio-filter-title"><strong>Keep H/L ratios (log2)</strong></div>
                 {renderRatioRange(1)}
                 {renderRatioRange(2)}
                 {renderApplyButton()}
@@ -125,17 +117,8 @@ class FilterPeptides extends Component {
 }
 
 FilterPeptides.propTypes = {
-    sampleSelection: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 };
-
-function mapStateToProps(state) {
-    const props = {
-        sampleSelection: state.plotReducer.sampleSelection
-    };
-
-    return props;
-}
 
 function mapDispatchToProps(dispatch) {
     const actionMap = {
@@ -144,4 +127,4 @@ function mapDispatchToProps(dispatch) {
     return actionMap;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterPeptides);
+export default connect(null, mapDispatchToProps)(FilterPeptides);
