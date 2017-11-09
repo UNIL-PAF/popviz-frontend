@@ -93,7 +93,7 @@ class SelectSamples extends Component {
         }
 
         return (
-            <NavDropdown title="Sample selection" id="basic-nav-dropdown">
+            <NavDropdown title="Select samples" id="basic-nav-dropdown">
                 {renderSourceSelectionDropdown()}
                 {renderCheckboxes(sampleSelection)}
             </NavDropdown>

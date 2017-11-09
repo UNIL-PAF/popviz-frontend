@@ -9,6 +9,7 @@ import SelectSamples from './components/controls/selectSamples'
 import SliceSilacPlot from './components/plot/sliceSilacPlot'
 import ProteinTitle from './components/plot/proteinTitle'
 import Legends from './components/plot/legends'
+import FilterPeptides from './components/controls/filterPeptides'
 
 class App extends Component {
   render() {
@@ -32,6 +33,7 @@ class App extends Component {
                   <Nav>
                       <LoadProteinInputs />
                       <SelectSamples/>
+                      <FilterPeptides/>
                   </Nav>
               </Navbar.Collapse>
           </Navbar>

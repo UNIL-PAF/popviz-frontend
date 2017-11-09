@@ -125,7 +125,7 @@ peptide-pop-over.shadow {
 }
 
 .dropdown-menu {
-    width: 200px;
+    width: 250px;
 }
 
 .sample-menu-dropdown {
@@ -135,5 +135,29 @@ peptide-pop-over.shadow {
 
 .sample-menu-item {
     text-nowrap: true;
+    padding-left: 15px;
+}
+
+.ratio-filter-item {
+    text-nowrap: true;
+    padding-left: 8px;
+}
+
+.ratio-filter-input {
+    width: 50px;
+}
+
+.ratio-filter-line {
+    padding-bottom: 5px;
+}
+
+.ratio-filter-title {
+    padding-bottom: 10px;
+}
+
+.ratio-filter-button {
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 10px;
     padding-left: 15px;
 }
