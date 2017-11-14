@@ -21,8 +21,8 @@ class App extends Component {
                   <Navbar.Brand>
                       <div id="sib-logo">
                           <span>
-                            <a href="http://www.isb-sib.ch/">
-                                <img src={sibLogo} height="30" alt="SIB"/>
+                            <a href="http://www.sib.swiss/">
+                                <img src={sibLogo} height="30" alt="SIB Swiss Institute of Bioinformatics"/>
                             </a>
                           </span>
                       </div>
