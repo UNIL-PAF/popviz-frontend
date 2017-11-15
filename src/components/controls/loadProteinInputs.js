@@ -2,37 +2,124 @@ import React, {
     Component
 } from 'react';
 import PropTypes from 'prop-types';
-import { Button , FormGroup, InputGroup, FormControl, Navbar } from 'react-bootstrap';
+import { Button , FormGroup, InputGroup, Navbar } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Autosuggest from 'react-autosuggest';
+
 import * as ControlActions from '../../actions'
 import {loadProteinFromBackend} from './loadProteinFromBackend'
+import {loadFastaHeadersFromBackend} from './loadFastaHeadersFromBackend'
+import LoadingSvgIcon from './loadingSvgIcon'
 
 class LoadProteinInputs extends Component {
 
     constructor(props) {
         super(props)
 
-        this.state = {proteinAC: props.proteinAC}
+        this.state = {
+            value: '',
+            suggestions: [],
+            isLoading: false
+        }
     }
 
-    changeInput = e => {
-        this.setState({proteinAC: e.target.value});
+    setSuggestions = value => {
+        //const valHead = (value.length > 100) ? value.slice(0, 100) : value
+
+        this.setState({
+            isLoading: false,
+            suggestions: value
+        })
     }
+
+    getSuggestions = value => {
+        if(! this.state.isLoading){
+            this.setState({ isLoading: true });
+            loadFastaHeadersFromBackend(value, this.setSuggestions)
+        }
+    }
+
+    getSuggestionValue = suggestion => {
+        return suggestion.proteinAC
+    }
+
+    renderSuggestion = suggestion => {
+        const {value} = this.state
+
+        const lcVal = this.state.value.toLowerCase()
+        const fastaString = suggestion.fastaHeaders
+        const lcFastaString = fastaString.toLowerCase()
+        const hitPos = lcFastaString.indexOf(lcVal)
+        const highlightedString = <span>{fastaString.slice(0,hitPos)}<strong><em>{fastaString.slice(hitPos, hitPos+value.length)}</em></strong>{fastaString.slice(hitPos + value.length - fastaString.length)}</span>
+
+        return <div>
+            <strong>{suggestion.proteinAC}:</strong>&nbsp;{highlightedString}
+        </div>
+    }
+
+    onChange = (event, { newValue }) => {
+        this.setState({
+            value: newValue
+        });
+    };
 
     onLoadProtein = e => {
-        this.props.actions.loadProtein(this.state.proteinAC);
+        this.props.actions.loadProtein(this.state.value);
     }
 
+    onSuggestionsFetchRequested = ({ value }) => {
+            if(value.trim().length >= 3){
+                this.getSuggestions(value)
+            }else{
+                this.setState({ suggestions: []})
+            }
+
+    };
+
+    // Autosuggest will call this function every time you need to clear suggestions.
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
+
+    renderInputComponent = inputProps => (
+        <div className="inputContainer">
+            {this.state.isLoading && <LoadingSvgIcon/>}
+            <input {...inputProps}/>
+        </div>
+    );
+
     render() {
-        const {proteinAC, isLoading} = this.props;
-        if(isLoading) loadProteinFromBackend(proteinAC, this.props.actions.proteinIsLoaded);
+        const {proteinAC, isLoading, actions} = this.props;
+        const {value, suggestions} = this.state;
+
+        if(isLoading) loadProteinFromBackend(proteinAC, actions.proteinIsLoaded);
+
+        const inputProps = {
+            placeholder: 'e.g. TFRC',
+            value,
+            onChange: this.onChange
+        };
+
+        const renderAutosuggest = () => {
+            return <Autosuggest
+                suggestions={suggestions}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                getSuggestionValue={this.getSuggestionValue}
+                renderSuggestion={this.renderSuggestion}
+                inputProps={inputProps}
+                renderInputComponent={this.renderInputComponent}
+            />
+        }
 
         return (
                 <Navbar.Form pullLeft>
                     <FormGroup onSubmit={this.onLoadProtein}>
                         <InputGroup>
-                            <FormControl type="text" value={this.state.proteinAC} onChange={this.changeInput} />
+                            {renderAutosuggest()}
                             <InputGroup.Button>
                                 <Button onClick={this.onLoadProtein}>Load</Button>
                             </InputGroup.Button>
