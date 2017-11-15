@@ -1,9 +1,4 @@
-// adapt following to match target backend server
-const hostname = 'localhost';
-const port = '3001';
-// const port = '8888';
-const urlPrefix = '';
-// const urlPrefix = '/slimp/public';
+import {port, hostname, urlPrefix} from '../../config'
 
  let loadProteinFromBackend = (proteinAC, proteinLoadedCB) => {
 
