@@ -7,6 +7,9 @@ import * as _ from 'lodash';
 
 import { ratioColorScale, sampleColor } from './colorSettings'
 
+const titleFontSize = "8px"
+const defaultFontSize = "6px"
+
 class Legends extends Component {
 
     render() {
@@ -25,16 +28,16 @@ class Legends extends Component {
             const width = 15
 
             return <g>
-                <text x={x} y={y} fontFamily="sans-serif" fontSize="8px">H/L ratios (log2)</text>
+                <text x={x} y={y} fontFamily="sans-serif" fontSize={titleFontSize}>H/L ratios (log2)</text>
                 <rect fill="url(#ratio-gradient)"
                              x={x}
                              y={y+6}
                              width={width}
                              height={height}
                 />
-                <text x={x+width+2} y={y+10} fontFamily="sans-serif" fontSize="6px">{'>=2 (+ in Control)'}</text>
-                <text x={x+width+2} y={y+8+height/2} fontFamily="sans-serif" fontSize="6px">0</text>
-                <text x={x+width+2} y={y+5+height} fontFamily="sans-serif" fontSize="6px">{'<=−2 (+ in Treated)'}</text>
+                <text x={x+width+2} y={y+10} fontFamily="sans-serif" fontSize={defaultFontSize}>{'>=2 (+ in Control)'}</text>
+                <text x={x+width+2} y={y+8+height/2} fontFamily="sans-serif" fontSize={defaultFontSize}>0</text>
+                <text x={x+width+2} y={y+5+height} fontFamily="sans-serif" fontSize={defaultFontSize}>{'<=−2 (+ in Treated)'}</text>
             </g>
         }
 
@@ -47,7 +50,7 @@ class Legends extends Component {
 
         const plotTheoWeightLegend = (x, y) => {
             return <g>
-                <text x={x} y={y} fontFamily="sans-serif" fontSize="8px">Theo prot weight</text>
+                <text x={x} y={y} fontFamily="sans-serif" fontSize={titleFontSize}>Theo prot weight</text>
                 <line
                     className="theo-prot-weight"
                     x1={x}
@@ -81,8 +84,8 @@ class Legends extends Component {
                     r={radius}
                     fill={color}
                 />
-                <text x={x+12} y={y} fontFamily="sans-serif" fontSize="6px">{name + ' -'}</text>
-                <text x={x+32} y={y} fontFamily="sans-serif" fontSize="6px" fontStyle="italic">{desc}</text>
+                <text x={x+12} y={y} fontFamily="sans-serif" fontSize={defaultFontSize}>{name + ' -'}</text>
+                <text x={x+32} y={y} fontFamily="sans-serif" fontSize={defaultFontSize} fontStyle="italic">{desc}</text>
             </g>
 
         }
@@ -102,7 +105,7 @@ class Legends extends Component {
             })
 
             return <g>
-                <text x={x} y={y} fontFamily="sans-serif" fontSize="8px">Samples</text>
+                <text x={x} y={y} fontFamily="sans-serif" fontSize={titleFontSize}>Samples</text>
                 { samplePlots }
             </g>
 

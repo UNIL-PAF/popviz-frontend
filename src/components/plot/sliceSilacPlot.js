@@ -246,7 +246,7 @@ class SliceSilacPlot extends Component {
                     zoomRight={thisZoomRight}
                     sequence={protein.sequence}
                     xScale={this.state.xScale}
-                    yPos={height - this.margin.bottom + 11}
+                    yPos={height - this.margin.bottom + 18}
                     key="amino-acid-bar"
                 />
         }

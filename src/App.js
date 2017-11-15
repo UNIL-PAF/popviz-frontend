@@ -41,11 +41,11 @@ class App extends Component {
           <ProteinTitle />
 
         <Row className="App-plot-area">
-            <Col md={11}>
+            <Col md={10}>
                 <SliceSilacPlot width={800} height={300}/>
             </Col>
-            <Col md={1} className="pull-left">
-                <Legends width={72} height={300}/>
+            <Col md={2} className="pull-left">
+                <Legends width={112} height={300}/>
             </Col>
         </Row>
 
