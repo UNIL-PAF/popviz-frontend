@@ -1,4 +1,4 @@
-import { LOAD_PROTEIN, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION } from '../actions/const'
+import { LOAD_PROTEIN, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION, STOP_LOADING_PROTEIN } from '../actions/const'
 
 const defaultState = {
     proteinAC: 'P02786',
@@ -13,6 +13,12 @@ export default function reduceControlActions(state = defaultState, action = null
         proteinAC: action.proteinAC,
         isLoading: true
       }
+      case STOP_LOADING_PROTEIN:
+          return {
+              ...state,
+              proteinAC: undefined,
+              isLoading: false
+          }
       case PROTEIN_IS_LOADED:
           return{
               ...state,

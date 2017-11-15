@@ -6,6 +6,7 @@ export const LOAD_PROTEIN = 'LOAD_PROTEIN'
 export const PROTEIN_IS_LOADED = 'PROTEIN_IS_LOADED'
 export const CHANGE_SAMPLE_SELECTION = 'CHANGE_SAMPLE_SELECTION'
 export const FILTER_PSMS = 'FILTER_PSMS'
+export const STOP_LOADING_PROTEIN = 'STOP_LOADING_PROTEIN'
 
 /**
  * "plot" constants

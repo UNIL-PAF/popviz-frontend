@@ -95,7 +95,7 @@ class LoadProteinInputs extends Component {
         const {proteinAC, isLoading, actions} = this.props;
         const {value, suggestions} = this.state;
 
-        if(isLoading) loadProteinFromBackend(proteinAC, actions.proteinIsLoaded);
+        if(isLoading) loadProteinFromBackend(proteinAC, actions.proteinIsLoaded, actions.stopLoadingProtein);
 
         const inputProps = {
             placeholder: 'e.g. TFRC',
@@ -132,7 +132,7 @@ class LoadProteinInputs extends Component {
 }
 
 LoadProteinInputs.propTypes = {
-    proteinAC: PropTypes.string.isRequired,
+    proteinAC: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired
 };

@@ -8,6 +8,10 @@ export function loadProtein(proteinAC) {
   return { type: types.LOAD_PROTEIN, proteinAC: proteinAC }
 }
 
+export function stopLoadingProtein() {
+    return { type: types.STOP_LOADING_PROTEIN }
+}
+
 export function changeSampleSelection(sampleSelection){
     return { type: types.CHANGE_SAMPLE_SELECTION, sampleSelection: sampleSelection}
 }
