@@ -210,7 +210,7 @@ class SliceSilacPlot extends Component {
                     end={end}
                     maxShift={maxShift}
                     xScale={this.state.xScale}
-                    yPos={height - this.margin.bottom + 20}
+                    yPos={height - this.margin.bottom + 28}
                     yShift={10}
                     key={'pep-aa-seq' + sampleName + seq}
                 />
@@ -278,7 +278,7 @@ class SliceSilacPlot extends Component {
             // adapt the viewPort height by calling the callback from sliceSilacPlot
             // we only have to adapt if the maxShift is > 7
             const maxShift = (aaShiftArray.length) ? _.max(aaShiftArray) : 0
-            const additionalHeight = (maxShift > 7) ? ((maxShift-7) * 10) : 0
+            const additionalHeight = (maxShift > 7) ? ((maxShift-7) * 11) : 0
 
              return <div>
                 <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height + additionalHeight}`} width="100%" height="100%" ref={r => this.svg = r}>
