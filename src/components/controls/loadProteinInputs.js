@@ -84,6 +84,11 @@ class LoadProteinInputs extends Component {
         });
     };
 
+    // load the suggested
+    onSuggestionSelected = (e, {suggestionValue}) => {
+        this.props.actions.loadProtein(suggestionValue)
+    }
+
     renderInputComponent = inputProps => (
         <div className="inputContainer">
             {this.state.isLoading && <LoadingSvgIcon/>}
@@ -110,6 +115,7 @@ class LoadProteinInputs extends Component {
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                 getSuggestionValue={this.getSuggestionValue}
                 renderSuggestion={this.renderSuggestion}
+                onSuggestionSelected={this.onSuggestionSelected}
                 inputProps={inputProps}
                 renderInputComponent={this.renderInputComponent}
             />
