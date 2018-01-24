@@ -232,3 +232,11 @@ peptide-pop-over.shadow {
     width: 16px;
     height: 16px;
 }
+
+#selection-rect {
+    stroke: grey;
+    fill: grey;
+    fill-opacity: 0.1;
+    rx: 2;
+    ry: 2;
+}

@@ -42,9 +42,25 @@ export function clickOnPep(id, x, y) {
 }
 
 export function mouseOverSequence(sampleName, sequence){
-    return { type: types.MOUSE_OVER_SEQUENCE, sampleName: sampleName, sequence: sequence}
+    return { type: types.MOUSE_OVER_SEQUENCE, sampleName: sampleName, sequence: sequence }
 }
 
 export function removePopover(id){
     return { type: types.REMOVE_POPOVER, id: id }
+}
+
+export function shiftPressedDown(status){
+    return { type: types.SHIFT_PRESSED_DOWN, isDown: status }
+}
+
+export function shiftAndMouseDown(status){
+    return { type: types.SHIFT_AND_MOUSE_DOWN, isDown: status }
+}
+
+export function changeSelectionRect(x, y, aaPos, molWeight){
+    return { type: types.CHANGE_SELECTION_RECT, x: x, y: y, aaPos: aaPos, molWeight: molWeight }
+}
+
+export function finalSelection(selectionRect){
+    return { type: types.FINAL_SELECTION, selectionRect: selectionRect }
 }

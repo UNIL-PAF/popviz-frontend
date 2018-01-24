@@ -8,7 +8,11 @@ import {
     MOUSE_OVER_SEQUENCE,
     CLICK_ON_PEP,
     REMOVE_POPOVER,
-    FILTER_PSMS
+    FILTER_PSMS,
+    SHIFT_PRESSED_DOWN,
+    SHIFT_AND_MOUSE_DOWN,
+    CHANGE_SELECTION_RECT,
+    FINAL_SELECTION
 } from '../actions/const'
 
 const defaultState = {
@@ -33,7 +37,11 @@ const defaultState = {
     filteredPepSeqs: null,
     openPopovers: [],
     openPopoversId: [],
-    filters: []
+    filters: [],
+    shiftPressedDown: false,
+    shiftAndMouseDown: false,
+    selectionRect: null,
+    selectionRectMeasures: null
 };
 
 export default function changePlot(state = defaultState, action = null) {
@@ -48,10 +56,27 @@ export default function changePlot(state = defaultState, action = null) {
 
     // filter the peptide list by selected samples
     const createFilteredList = (peptides, selectedSamples) => {
+        const nrSelectedSamples = selectedSamples.length
+
         // render only peptides from selected samples
-        return peptides.filter((p) => {
+        const fltPeps = peptides.filter((p) => {
             return selectedSamples.indexOf(p.sampleName) >= 0;
         });
+
+        const pepWithGraphAaPos = fltPeps.map((p) => {
+            const samplePos = selectedSamples.indexOf(p.sampleName)
+            const width = (p.endPos - p.startPos) / nrSelectedSamples
+            const pos = p.startPos + (samplePos * width)
+            const startPosGraph = pos
+            const endPosGraph = pos + width
+            return {
+                ...p,
+                startPosGraph: startPosGraph,
+                endPosGraph: endPosGraph
+            }
+        })
+
+        return pepWithGraphAaPos
     }
 
     // filter peptides list by selected samples and its zoom range
@@ -251,6 +276,68 @@ export default function changePlot(state = defaultState, action = null) {
               mouseOverPepIds: findPepIds(action.sampleName, action.sequence, state.filteredPepList),
               highlightPepSeq: null
           }
+      case SHIFT_PRESSED_DOWN:
+          return {
+              ...state,
+              shiftPressedDown: action.isDown,
+              shiftAndMouseDown: !action.isDown ? action.isDown : state.shiftAndMouseDown
+          }
+      case SHIFT_AND_MOUSE_DOWN:
+          return {
+              ...state,
+              shiftAndMouseDown: action.isDown
+          }
+      case CHANGE_SELECTION_RECT:
+          var selRect = {
+              startX: (state.selectionRect) ? state.selectionRect.startX : action.x,
+              startY: (state.selectionRect) ? state.selectionRect.startY : action.y,
+              endX: (state.selectionRect) ? action.x : undefined,
+              endY: (state.selectionRect) ? action.y : undefined,
+          }
+
+          var selectionRectMeasures = {
+              startAaPos: (state.selectionRectMeasures) ? state.selectionRectMeasures.startAaPos : action.aaPos,
+              startMolWeight: (state.selectionRectMeasures) ? state.selectionRectMeasures.startMolWeight : action.molWeight,
+              endAaPos: (state.selectionRectMeasures) ? action.aaPos : undefined,
+              endMolWeight: (state.selectionRectMeasures) ? action.molWeight : undefined,
+          }
+
+          // find the pep ids to highlight (which have the same sample and sequence)
+          const findPepIdsByMeasures = (selectionRectMeasures, filteredPepList) => {
+              const {startMolWeight, endMolWeight, startAaPos, endAaPos} = selectionRectMeasures
+              const minMolWeight = (startMolWeight < endMolWeight) ? startMolWeight : endMolWeight
+              const maxMolWeight = (endMolWeight > startMolWeight) ? endMolWeight : startMolWeight
+              const minAaPos = (startAaPos < endAaPos) ? startAaPos : endAaPos
+              const maxAaPos = (endAaPos > startAaPos) ? endAaPos : startAaPos
+
+              const peptides = filteredPepList.filter( (p) => {
+                  return p.molWeight <= maxMolWeight &&
+                        p.molWeight >= minMolWeight &&
+                        p.startPosGraph >= minAaPos &&
+                        p.endPosGraph <= maxAaPos
+              })
+
+              return peptides.map( (p) => {
+                  return p.id
+              })
+          }
+
+          return {
+              ...state,
+              finalSelectionRect: null,
+              selectionRect: selRect,
+              selectionRectMeasures: selectionRectMeasures,
+              mouseOverPepIds: (state.selectionRectMeasures) ? findPepIdsByMeasures(selectionRectMeasures, state.filteredPepList) : null
+          }
+
+      case FINAL_SELECTION:
+          return {
+              ...state,
+              finalSelectionRect: action.selectionRect,
+              selectionRect: null,
+              selectionRectMeasures: null
+          }
+
     default:
       return state
 

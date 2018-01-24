@@ -18,6 +18,7 @@ import PeptidePopOver from './peptidePopOver'
 import AminoAcidBar from './aminoAcidBar'
 import PeptideAaSequences from './peptideAaSequences'
 import TheoProtWeight from './theoProtWeight'
+import SelectionRect from './selectionRect'
 
 class SliceSilacPlot extends Component {
 
@@ -48,12 +49,58 @@ class SliceSilacPlot extends Component {
         }
     }
 
+    // handle the mouse down in case of shift pressed
+    onMouseDown = () => {
+        this.props.actions.shiftAndMouseDown(true)
+    }
+
+    onMouseUp = (e) => {
+        this.props.actions.shiftAndMouseDown(false)
+    }
+
     componentDidMount(){
-        setTimeout(() => this.brushG.call(brushX(this.state.xScale).on('end', this.brushend)))
+        // add the listeners to check for any shift button pressed
+        document.addEventListener( 'keydown', (e) => {
+                if(e.key === 'Shift')
+                    this.props.actions.shiftPressedDown(true)
+            })
+        document.addEventListener( 'keyup', (e) => {
+                if(e.key === 'Shift')
+                    this.props.actions.shiftPressedDown(false)
+            })
     }
 
     componentDidUpdate(){
-        const {protein} = this.props;
+        const {protein, shiftPressedDown, shiftAndMouseDown, selectionRect} = this.props;
+
+        // if shift is pressed, we can select a certain area.
+        // Otherwise we have the brushX zoom
+        if(shiftAndMouseDown){
+            this.backgroundRect.on('mousemove', () => {
+                const [x,y] = d3.mouse(this.svg)
+                const xWithoutMargin = x - this.margin.left
+                const yWithoutMargin = y - this.margin.top
+                this.props.actions.changeSelectionRect(x, y, this.state.xScale.invert(xWithoutMargin), this.state.yScale.invert(yWithoutMargin))
+            })
+        }else{
+            // we got the final selection rect
+            if(selectionRect){
+                this.props.actions.finalSelection(selectionRect)
+
+                console.log('final selection')
+                console.log(selectionRect)
+
+
+            }
+
+            this.backgroundRect.on('mousemove', null)
+        }
+
+        // if we don't have the shift pressed, we use the x-axis brush
+        if(!shiftPressedDown){
+            // add the brush for the x-axis zoom
+            setTimeout(() => this.brushG.call(brushX(this.state.xScale).on('end', this.brushend)))
+        }
 
         // add the x-axis
         const xAxis = axisBottom(this.state.xScale)
@@ -95,7 +142,10 @@ class SliceSilacPlot extends Component {
             openPopovers,
             openPopoversId,
             highlightPepSeq,
-            filteredPepSeqs
+            filteredPepSeqs,
+            shiftPressedDown,
+            selectionRect,
+            finalSelectionRect
         } = this.props;
 
         // create an array with entries for every AA position
@@ -272,7 +322,8 @@ class SliceSilacPlot extends Component {
             });
         }
 
-        const mainPlot = () => {
+
+        const mainPlot = (shiftPressedDown, selectionRect, finalSelectionRect) => {
             const plotContent = protein ? plotContentGenerator() : null
 
             // adapt the viewPort height by calling the callback from sliceSilacPlot
@@ -281,19 +332,27 @@ class SliceSilacPlot extends Component {
             const additionalHeight = (maxShift > 7) ? ((maxShift-7) * 11) : 0
 
              return <div>
-                <svg className="slice-silac-svg" viewBox={`0 0 ${width} ${height + additionalHeight}`} width="100%" height="100%" ref={r => this.svg = r}>
+                <svg className="slice-silac-svg"
+                     viewBox={`0 0 ${width} ${height + additionalHeight}`}
+                     width="100%"
+                     height="100%"
+                     ref={r => this.svg = r}
+                >
                     <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
                     <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
-                    <g className="brush-g" ref={r => this.brushG = select(r)} onDoubleClick={this.zoomOut} transform={'translate('+this.margin.left+','+this.margin.top+')'}/>
+                    { !shiftPressedDown && <g className="brush-g" ref={r => this.brushG = select(r)} onDoubleClick={this.zoomOut} transform={'translate('+this.margin.left+','+this.margin.top+')'}/> }
                     <g className="main-g" transform={'translate('+this.margin.left+','+this.margin.top+')'}>
                         { plotContent }
                     </g>
+                    { finalSelectionRect && <SelectionRect selectionRect={finalSelectionRect}/> }
+                    { selectionRect && selectionRect.endX && <SelectionRect selectionRect={selectionRect} /> }
+                    { shiftPressedDown && <rect fillOpacity={0} width="100%" height="100%" ref={r => this.backgroundRect = select(r)} onMouseDown={(e) => this.onMouseDown(e)} onMouseUp={(e) => this.onMouseUp(e)} />}
                 </svg>
             </div>
         }
 
         return (
-            mainPlot()
+            mainPlot(shiftPressedDown, selectionRect, finalSelectionRect)
         )
 
     }
@@ -314,7 +373,11 @@ SliceSilacPlot.propTypes = {
     openPopoversId: PropTypes.array.isRequired,
     highlightPepSeq: PropTypes.object,
     filteredPepSeqs: PropTypes.object,
-    selectedSamples: PropTypes.array
+    selectedSamples: PropTypes.array,
+    shiftPressedDown: PropTypes.bool,
+    shiftAndMouseDown: PropTypes.bool,
+    selectionRect: PropTypes.object,
+    finalSelectionRect: PropTypes.object
 };
 
 function mapStateToProps(state) {
@@ -330,7 +393,11 @@ function mapStateToProps(state) {
         openPopoversId: state.plotReducer.openPopoversId,
         highlightPepSeq: state.plotReducer.highlightPepSeq,
         filteredPepSeqs: state.plotReducer.filteredPepSeqs,
-        selectedSamples: state.plotReducer.selectedSamples
+        selectedSamples: state.plotReducer.selectedSamples,
+        shiftPressedDown: state.plotReducer.shiftPressedDown,
+        shiftAndMouseDown: state.plotReducer.shiftAndMouseDown,
+        selectionRect: state.plotReducer.selectionRect,
+        finalSelectionRect: state.plotReducer.finalSelectionRect
     };
 
     return props;

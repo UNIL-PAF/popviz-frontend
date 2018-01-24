@@ -21,8 +21,6 @@ class Peptide extends Component {
         this.state = this.setDefaultRect();
     }
 
-
-
     // limit ratio range to -2 and 2
     limitRatioRange = (ratio) => {
         if(ratio < -2) return -2
