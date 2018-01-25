@@ -96,10 +96,10 @@ class PeptidePopOver extends Component {
         }
 
         const plotRemoveButton = () => {
-            const thisWidth = 3
-            const thisHeight = 3
+            const thisWidth = 5
+            const thisHeight = 5
             const thisX = (x+144+seqLengthCorr-thisWidth)
-            const thisY = (y+8-thisHeight)
+            const thisY = (y+10-thisHeight)
 
             return <g
                 className="peptide-pop-over-close"
