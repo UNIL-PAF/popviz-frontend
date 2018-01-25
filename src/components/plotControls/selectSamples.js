@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import { NavDropdown, FormGroup, FormControl } from 'react-bootstrap'
 
-import { sampleColor } from '../plot/colorSettings'
+import { sampleColor } from '../mainPlot/colorSettings'
 import * as ControlActions from '../../actions'
 
 class SelectSamples extends Component {

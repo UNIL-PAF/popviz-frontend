@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 import { sampleColor } from './colorSettings'
 
 import Peptide from './peptide'
-import PeptidePopOver from './peptidePopOver'
+import PeptidePopOver from './popOver/peptidePopOver'
 import AminoAcidBar from './aminoAcidBar'
 import PeptideAaSequences from './peptideAaSequences'
 import TheoProtWeight from './theoProtWeight'
