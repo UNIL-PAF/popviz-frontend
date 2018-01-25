@@ -15,6 +15,7 @@ import { sampleColor } from './colorSettings'
 
 import Peptide from './peptide'
 import PeptidePopOver from './popOver/peptidePopOver'
+import SelectionPopOver from './popOver/selectionPopOver'
 import AminoAcidBar from './aminoAcidBar'
 import PeptideAaSequences from './peptideAaSequences'
 import TheoProtWeight from './theoProtWeight'
@@ -329,26 +330,38 @@ class SliceSilacPlot extends Component {
             // adapt the viewPort height by calling the callback from sliceSilacPlot
             // we only have to adapt if the maxShift is > 7
             const maxShift = (aaShiftArray.length) ? _.max(aaShiftArray) : 0
-            const additionalHeight = (maxShift > 7) ? ((maxShift-7) * 11) : 0
+            const additionalHeight = (maxShift > 7) ? ((maxShift - 7) * 11) : 0
 
-             return <div>
+            return <div>
                 <svg className="slice-silac-svg"
                      viewBox={`0 0 ${width} ${height + additionalHeight}`}
                      width="100%"
                      height="100%"
                      ref={r => this.svg = r}
                 >
-                    <g className="y-axis" ref={r => this.yAxis = r} transform={'translate('+this.margin.left+','+this.margin.top+')'} />
-                    <g className="x-axis" ref={r => this.xAxis = r} transform={'translate('+this.margin.left + ','+(height-this.margin.bottom)+')'} />
-                    { !shiftPressedDown && <g className="brush-g" ref={r => this.brushG = select(r)} onDoubleClick={this.zoomOut} transform={'translate('+this.margin.left+','+this.margin.top+')'}/> }
-                    <g className="main-g" transform={'translate('+this.margin.left+','+this.margin.top+')'}>
+                    <g className="y-axis" ref={r => this.yAxis = r}
+                       transform={'translate(' + this.margin.left + ',' + this.margin.top + ')'}/>
+                    <g className="x-axis" ref={r => this.xAxis = r}
+                       transform={'translate(' + this.margin.left + ',' + (height - this.margin.bottom) + ')'}/>
+                    { !shiftPressedDown &&
+                    <g className="brush-g" ref={r => this.brushG = select(r)} onDoubleClick={this.zoomOut}
+                       transform={'translate(' + this.margin.left + ',' + this.margin.top + ')'}/> }
+                    <g className="main-g" transform={'translate(' + this.margin.left + ',' + this.margin.top + ')'}>
                         { plotContent }
                     </g>
-                    { finalSelectionRect && <SelectionRect selectionRect={finalSelectionRect}/> }
-                    { selectionRect && selectionRect.endX && <SelectionRect selectionRect={selectionRect} /> }
-                    { shiftPressedDown && <rect fillOpacity={0} width="100%" height="100%" ref={r => this.backgroundRect = select(r)} onMouseDown={(e) => this.onMouseDown(e)} onMouseUp={(e) => this.onMouseUp(e)} />}
+                    { finalSelectionRect &&
+                    <g>
+                        <SelectionRect selectionRect={finalSelectionRect}/>
+                        <SelectionPopOver />
+                    </g>
+                    }
+                    { selectionRect && selectionRect.endX && <SelectionRect selectionRect={selectionRect}/> }
+                    { shiftPressedDown &&
+                    <rect fillOpacity={0} width="100%" height="100%" ref={r => this.backgroundRect = select(r)}
+                          onMouseDown={(e) => this.onMouseDown(e)} onMouseUp={(e) => this.onMouseUp(e)}/>}
                 </svg>
             </div>
+
         }
 
         return (
