@@ -37,16 +37,16 @@ class PeptidePopOver extends Component {
 
     render() {
         const {popOverInfo, removable, limitRight} = this.props;
-        const textShiftY = 6;
-        const textShiftX = 40;
+        const textShiftY = 9;
+        const textShiftX = 60;
         const popupShiftX = -10;
         const popupShiftY = -20;
 
         var [x,y] = [popOverInfo.x + popupShiftX, popOverInfo.y + popupShiftY]
 
-        const seqLengthCorr = (popOverInfo.pepInfo.sequence.length > 10) ? (popOverInfo.pepInfo.sequence.length - 10) * 3 : 0;
+        const seqLengthCorr = (popOverInfo.pepInfo.sequence.length > 10) ? (popOverInfo.pepInfo.sequence.length - 10) * 5 : 0;
 
-        const width = 100 + seqLengthCorr
+        const width = 150 + seqLengthCorr
 
         // if the popover lies outside the plot area, we place it left of the mouse position
         if(x+width > limitRight)x = x-width-50
@@ -73,7 +73,7 @@ class PeptidePopOver extends Component {
                             x={(x+5)}
                             y={(y+i*textShiftY+5)}
                             fontFamily="Helvetica"
-                            fontSize="5"
+                            fontSize="8px"
                         >
                         {k}
                     </text>
@@ -83,7 +83,7 @@ class PeptidePopOver extends Component {
                             x={(x + textShiftX + 5)}
                             y={(y+i*textShiftY+5)}
                             fontFamily="Helvetica"
-                            fontSize="5"
+                            fontSize="8px"
                        >
                             {v}
                        </text>
@@ -98,7 +98,7 @@ class PeptidePopOver extends Component {
         const plotRemoveButton = () => {
             const thisWidth = 3
             const thisHeight = 3
-            const thisX = (x+95+seqLengthCorr-thisWidth)
+            const thisX = (x+144+seqLengthCorr-thisWidth)
             const thisY = (y+8-thisHeight)
 
             return <g
@@ -145,7 +145,7 @@ class PeptidePopOver extends Component {
                     rx="5"
                     ry="5"
                     width={width}
-                    height="60" />
+                    height="80" />
                 {infoToSvgText(popOverInfo.pepInfo, x, y+3)}
                 { removable && plotRemoveButton()}
             </g>

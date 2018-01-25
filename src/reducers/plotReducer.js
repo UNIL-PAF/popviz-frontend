@@ -140,7 +140,8 @@ export default function changePlot(state = defaultState, action = null) {
               zoomLeft: action.zoomLeft,
               zoomRight: action.zoomRight,
               openPopovers: [],
-              openPopoversId: []
+              openPopoversId: [],
+              finalSelectionRect: null
           }
       case MOUSE_OVER_PEP:
           const getPopover = (filteredPepList, mouseOverPepId, x, y) => {
@@ -171,11 +172,16 @@ export default function changePlot(state = defaultState, action = null) {
                   end: newPopOver.pepInfo.endPos
               }
           }
-          return {
-              ...state,
-              mouseOverPepIds: getPopoverIds(action.id),
-              mouseOverPopover: newPopOver,
-              highlightPepSeq: newPopOver ? getHighlightPepSeq(newPopOver) : null
+          // we don't show popups if there is a selection
+          if(state.finalSelectionRect){
+              return state
+          }else{
+              return {
+                  ...state,
+                  mouseOverPepIds: getPopoverIds(action.id),
+                  mouseOverPopover: newPopOver,
+                  highlightPepSeq: newPopOver ? getHighlightPepSeq(newPopOver) : null
+              }
           }
       case CLICK_ON_PEP:
           const addPopover = (filteredPepList, openPopovers, id, x, y) => {
@@ -225,7 +231,8 @@ export default function changePlot(state = defaultState, action = null) {
               openPopovers: [],
               openPopoversId: [],
               zoomLeft: undefined,
-              zoomRight: undefined
+              zoomRight: undefined,
+              finalSelectionRect: null
           }
       case CHANGE_SAMPLE_SELECTION:
           const selectedSamples2 = computeSelectedSamples(action.sampleSelection)
@@ -238,7 +245,8 @@ export default function changePlot(state = defaultState, action = null) {
               filteredPepSeqs: state.protein ? filterPepSeqs(state.protein.samples, filteredPepList2, selectedSamples2): null,
               selectedSamples: selectedSamples2,
               openPopovers: [],
-              openPopoversId: []
+              openPopoversId: [],
+              finalSelectionRect: null
           }
       case FILTER_PSMS:
           const filteredPepList3 = state.protein ? createZoomedFilteredListWithFilters(state.protein.peptides, state.selectedSamples, state.zoomLeft, state.zoomRight, action.filters) : null
@@ -249,7 +257,8 @@ export default function changePlot(state = defaultState, action = null) {
               filteredPepSeqs: state.protein ? filterPepSeqs(state.protein.samples, filteredPepList3, state.selectedSamples): null,
               openPopovers: [],
               openPopoversId: [],
-              filters: action.filters
+              filters: action.filters,
+              finalSelectionRect: null
           }
       case MOUSE_OVER_SEQUENCE:
           const isMouseOverSeq = (sampleName, seq) => {
@@ -274,8 +283,10 @@ export default function changePlot(state = defaultState, action = null) {
               ...state,
               mouseOverSequence: isMouseOverSeq(action.sampleName, action.sequence),
               mouseOverPepIds: findPepIds(action.sampleName, action.sequence, state.filteredPepList),
-              highlightPepSeq: null
+              highlightPepSeq: null,
+              finalSelectionRect: null
           }
+
       case SHIFT_PRESSED_DOWN:
           return {
               ...state,
