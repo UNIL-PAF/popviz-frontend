@@ -7,12 +7,7 @@ var config = {};
 
 config.version = '1.0.4'
 
-// Backend connection
-config.port = '3001';
-// config.port = '8888';
-config.hostname = 'localhost';
-config.urlPrefix = '';
-// config.urlPrefix = '/slimp/public';
-
+config.urlBackend = "https://popviz.vital-it.ch/slimp/public"
+//config.urlBackend = "http://localhost:3001"
 
 module.exports = config;

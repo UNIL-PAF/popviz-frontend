@@ -1,8 +1,10 @@
-import {port, hostname, urlPrefix} from '../../config'
+import {urlBackend} from '../../config'
 
  let loadProteinFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB) => {
     if(proteinAC){
-        fetch(`http://` + hostname + `:` + port + urlPrefix + `/protein/` + proteinAC)
+        fetch(urlBackend + `/protein/` + proteinAC, {
+            credentials: 'same-origin'
+        })
             .then(function(response) {
                 if(response.status === 404){
                     alert('Protein [' + proteinAC + '] was not found')

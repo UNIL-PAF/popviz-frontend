@@ -1,8 +1,9 @@
-import {port, hostname, urlPrefix} from '../../config'
+import {urlBackend} from '../../config'
 
  let loadFastaHeadersFromBackend = (queryString, gotResponseCB) => {
-
-    fetch(`http://` + hostname + `:` + port + urlPrefix + `/query/` + queryString)
+     fetch(urlBackend + `/query/` + queryString, {
+         credentials: 'same-origin'
+     })
         .then(function(response) {
             if (response.status >= 400) {
                 throw new Error("Bad response from server");
