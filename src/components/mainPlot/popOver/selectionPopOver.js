@@ -28,23 +28,27 @@ class SelectionPopOver extends Component {
 
         // onCloseCb={this.props.actions.remove}
 
-        const x = finalSelectionRect.endX
-        const y = finalSelectionRect.startY
-        const width = 100
-        const height = 80
+        const x = finalSelectionRect.endX + 10
+        const y = finalSelectionRect.startY + 10
+        const width = 140
+        const height = 60
+
+        // settings for the 'copy to clipboard' button
+        const buttonWidth = 73
+        const buttonHeight = 11
+        const buttonText = "Copy to clipboard"
 
         return (
             <g>
                 <PopOverSkeleton x={x} y={y} width={width} height={height} content={content}
-                             removable={true}/>
-                <CopyClipboardButton x={x} y={y} width={10} height={10} data={peps}/>
+                             removable={true} colSpace={90}/>
+                <CopyClipboardButton x={x+width/2-buttonWidth/2} y={y+height-buttonHeight-10} width={buttonWidth} height={buttonHeight} data={peps} text={buttonText}/>
             </g>
         )
 
     }
 
 }
-
 
 SelectionPopOver.propTypes = {
     mouseOverPepIds: PropTypes.array.isRequired,

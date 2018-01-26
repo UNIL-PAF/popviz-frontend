@@ -242,16 +242,27 @@ peptide-pop-over.shadow {
 }
 
 .copy-clipboard-button {
-    fill: darkgrey;
-    stroke: darkgreen;
+    fill: #E4E4E4;
+    stroke: #CACACA;
+    rx: 2;
+    ry: 2;
 }
 
 .copy-clipboard-button:hover{
-    fill: lightgreen;
-    stroke: black;
+    fill: #CDCDCD;
+    stroke: #B5B5B5;
+    cursor: pointer;
 }
 
 .copy-clipboard-button:active{
-    fill: purple;
-    stroke: blue;
+    fill: #B6B6B6;
+    stroke: #A1A1A1;
+}
+
+.copy-clipboard-button-text{
+    pointer-events: none;
+}
+
+.peptide-pop-over-close:hover{
+    cursor: pointer;
 }

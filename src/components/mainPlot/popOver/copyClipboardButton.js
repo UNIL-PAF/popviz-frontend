@@ -18,7 +18,6 @@ class CopyClipboardButton extends Component {
             const one = header.map( (h) => {
                 return o[h];
             })
-
             return one.join(sep)
         })
 
@@ -27,7 +26,6 @@ class CopyClipboardButton extends Component {
         finalHeader[7] = "log10molWeight"
 
         return finalHeader.join(sep) + nlSep + sArr.join(nlSep)
-
     }
 
     handleOnClick = (e) => {
@@ -45,11 +43,20 @@ class CopyClipboardButton extends Component {
         }
 
     render() {
-        const {x, y, width, height} = this.props;
+        const {x, y, width, height, text} = this.props;
 
         return (
             <g>
                 <rect className={'copy-clipboard-button'} x={x} y={y} width={width} height={height} onClick={(e) => this.handleOnClick(e)} />
+                <text
+                    className="copy-clipboard-button-text"
+                    x={(x+5)}
+                    y={(y+8)}
+                    fontFamily="Helvetica"
+                    fontSize="8px"
+                >
+                    {text}
+                </text>
             </g>
         )
     }
@@ -60,7 +67,8 @@ CopyClipboardButton.propTypes = {
     y: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    text: PropTypes.string.isRequired
 }
 
 

@@ -33,10 +33,10 @@ class PopOverSkeleton extends Component {
     }
 
     render() {
-        const {x, y, width, height, content, onCloseCb, removable, contentId} = this.props;
+        const {x, y, width, height, content, onCloseCb, removable, contentId, colSpace} = this.props;
 
         const textShiftY = 9;
-        const textShiftX = 60;
+        const textShiftX = colSpace || 60;
 
         const infoToSvgText = (content, x,y) => {
             var i=1;
@@ -136,7 +136,8 @@ PopOverSkeleton.propTypes = {
     removable: PropTypes.bool,
     content: PropTypes.object.isRequired,
     onCloseCb: PropTypes.func,
-    contentId: PropTypes.string
+    contentId: PropTypes.string,
+    colSpace: PropTypes.number
 };
 
 export default PopOverSkeleton;
