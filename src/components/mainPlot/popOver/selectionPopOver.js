@@ -21,23 +21,23 @@ class SelectionPopOver extends Component {
             return mouseOverPepIds.indexOf(p.id) > -1
         })
 
-        console.log(peps.length)
-
         const content = {
             '# peptides': mouseOverPepIds.length,
             'mean molWeight' : (Math.pow(10, _.meanBy(peps, 'molWeight'))).toFixed(1) + ' kDa'
         }
 
-        console.log(mouseOverPepIds)
-        console.log(filteredPepList)
-
         // onCloseCb={this.props.actions.remove}
+
+        const x = finalSelectionRect.endX
+        const y = finalSelectionRect.startY
+        const width = 100
+        const height = 80
 
         return (
             <g>
-                <PopOverSkeleton x={finalSelectionRect.endX} y={finalSelectionRect.startY} width={100} height={80} content={content}
+                <PopOverSkeleton x={x} y={y} width={width} height={height} content={content}
                              removable={true}/>
-                <CopyClipboardButton />
+                <CopyClipboardButton x={x} y={y} width={10} height={10} data={peps}/>
             </g>
         )
 
@@ -50,7 +50,7 @@ SelectionPopOver.propTypes = {
     mouseOverPepIds: PropTypes.array.isRequired,
     finalSelectionRect: PropTypes.object.isRequired,
     filteredPepList: PropTypes.array.isRequired
-};
+}
 
 function mapStateToProps(state) {
     const props = {
