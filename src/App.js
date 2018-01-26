@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './styles/App.css';
-import { Navbar, Nav, Row, Col } from 'react-bootstrap'
+import { Navbar, Nav, Row, Col, NavItem } from 'react-bootstrap'
 
 import sibLogo from './images/sib_logo_2.png';
 
@@ -10,9 +10,12 @@ import SliceSilacPlot from './components/mainPlot/sliceSilacPlot'
 import ProteinTitle from './components/mainPlot/proteinTitle'
 import Legends from './components/mainPlot/legends'
 import FilterPeptides from './components/plotControls/filterPeptides'
+import popVizConfig from './config'
 
 class App extends Component {
+
   render() {
+
     return (
       <div className="AppControls">
 
@@ -34,6 +37,9 @@ class App extends Component {
                       <LoadProteinInputs />
                       <SelectSamples/>
                       <FilterPeptides/>
+                  </Nav>
+                  <Nav pullRight>
+                      <NavItem>Version {popVizConfig.version}</NavItem>
                   </Nav>
               </Navbar.Collapse>
           </Navbar>
