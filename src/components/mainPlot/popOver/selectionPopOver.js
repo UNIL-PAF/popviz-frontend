@@ -22,8 +22,8 @@ class SelectionPopOver extends Component {
         })
 
         const content = {
-            '# peptides': mouseOverPepIds.length,
-            'mean molWeight' : (Math.pow(10, _.meanBy(peps, 'molWeight'))).toFixed(1) + ' kDa'
+            'Selected peptides': mouseOverPepIds.length,
+            'Mean mol weight' : (Math.pow(10, _.meanBy(peps, 'molWeight'))).toFixed(1) + ' kDa'
         }
 
         // onCloseCb={this.props.actions.remove}
@@ -41,7 +41,7 @@ class SelectionPopOver extends Component {
         return (
             <g>
                 <PopOverSkeleton x={x} y={y} width={width} height={height} content={content}
-                             removable={true} colSpace={90}/>
+                             removable={true} colSpace={90} onCloseCb={this.props.actions.removeFinalSelection}/>
                 <CopyClipboardButton x={x+width/2-buttonWidth/2} y={y+height-buttonHeight-10} width={buttonWidth} height={buttonHeight} data={peps} text={buttonText}/>
             </g>
         )

@@ -12,7 +12,8 @@ import {
     SHIFT_PRESSED_DOWN,
     SHIFT_AND_MOUSE_DOWN,
     CHANGE_SELECTION_RECT,
-    FINAL_SELECTION
+    FINAL_SELECTION,
+    REMOVE_FINAL_SELECTION
 } from '../actions/const'
 
 const defaultState = {
@@ -141,7 +142,8 @@ export default function changePlot(state = defaultState, action = null) {
               zoomRight: action.zoomRight,
               openPopovers: [],
               openPopoversId: [],
-              finalSelectionRect: null
+              finalSelectionRect: null,
+              mouseOverPepIds: null
           }
       case MOUSE_OVER_PEP:
           const getPopover = (filteredPepList, mouseOverPepId, x, y) => {
@@ -232,7 +234,8 @@ export default function changePlot(state = defaultState, action = null) {
               openPopoversId: [],
               zoomLeft: undefined,
               zoomRight: undefined,
-              finalSelectionRect: null
+              finalSelectionRect: null,
+              mouseOverPepIds: null
           }
       case CHANGE_SAMPLE_SELECTION:
           const selectedSamples2 = computeSelectedSamples(action.sampleSelection)
@@ -246,7 +249,8 @@ export default function changePlot(state = defaultState, action = null) {
               selectedSamples: selectedSamples2,
               openPopovers: [],
               openPopoversId: [],
-              finalSelectionRect: null
+              finalSelectionRect: null,
+              mouseOverPepIds: null
           }
       case FILTER_PSMS:
           const filteredPepList3 = state.protein ? createZoomedFilteredListWithFilters(state.protein.peptides, state.selectedSamples, state.zoomLeft, state.zoomRight, action.filters) : null
@@ -347,6 +351,14 @@ export default function changePlot(state = defaultState, action = null) {
               finalSelectionRect: action.selectionRect,
               selectionRect: null,
               selectionRectMeasures: null
+          }
+      case REMOVE_FINAL_SELECTION:
+          return {
+              ...state,
+              finalSelectionRect: null,
+              selectionRect: null,
+              selectionRectMeasures: null,
+              mouseOverPepIds: null
           }
 
     default:

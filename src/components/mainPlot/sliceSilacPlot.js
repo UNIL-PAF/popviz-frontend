@@ -87,11 +87,6 @@ class SliceSilacPlot extends Component {
             // we got the final selection rect
             if(selectionRect){
                 this.props.actions.finalSelection(selectionRect)
-
-                console.log('final selection')
-                console.log(selectionRect)
-
-
             }
 
             this.backgroundRect.on('mousemove', null)

@@ -64,3 +64,7 @@ export function changeSelectionRect(x, y, aaPos, molWeight){
 export function finalSelection(selectionRect){
     return { type: types.FINAL_SELECTION, selectionRect: selectionRect }
 }
+
+export function removeFinalSelection(){
+    return { type: types.REMOVE_FINAL_SELECTION }
+}
