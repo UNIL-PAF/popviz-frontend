@@ -40,8 +40,6 @@ class App extends Component {
 
           <ProteinTitle />
 
-          <textarea className="js-copytextarea" defaultValue="Hello, I'm some text" />
-
         <Row className="App-plot-area">
             <Col md={10}>
                 <SliceSilacPlot width={800} height={300}/>

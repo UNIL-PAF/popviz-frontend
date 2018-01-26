@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import PopOverSkeleton from './popOverSkeleton'
+import CopyClipboardButton from './copyClipboardButton'
 
 class SelectionPopOver extends Component {
 
@@ -33,8 +34,11 @@ class SelectionPopOver extends Component {
         // onCloseCb={this.props.actions.remove}
 
         return (
-            <PopOverSkeleton x={finalSelectionRect.endX} y={finalSelectionRect.startY} width={100} height={80} content={content}
+            <g>
+                <PopOverSkeleton x={finalSelectionRect.endX} y={finalSelectionRect.startY} width={100} height={80} content={content}
                              removable={true}/>
+                <CopyClipboardButton />
+            </g>
         )
 
     }
