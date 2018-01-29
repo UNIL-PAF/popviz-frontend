@@ -89,7 +89,9 @@ class SliceSilacPlot extends Component {
                 this.props.actions.finalSelection(selectionRect)
             }
 
-            this.backgroundRect.on('mousemove', null)
+            if(this.backgroundRect){
+                this.backgroundRect.on('mousemove', null)
+            }
         }
 
         // if we don't have the shift pressed, we use the x-axis brush
