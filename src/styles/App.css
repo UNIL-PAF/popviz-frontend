@@ -237,15 +237,15 @@ peptide-pop-over.shadow {
     stroke: grey;
     fill: grey;
     fill-opacity: 0.1;
-    rx: 2;
-    ry: 2;
+    rx: 2px;
+    ry: 2px;
 }
 
 .copy-clipboard-button {
     fill: #E4E4E4;
     stroke: #CACACA;
-    rx: 2;
-    ry: 2;
+    rx: 2px;
+    ry: 2px;
 }
 
 .copy-clipboard-button:hover{
