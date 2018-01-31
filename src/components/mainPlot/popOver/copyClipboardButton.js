@@ -7,8 +7,6 @@ class CopyClipboardButton extends Component {
 
     objectToTableString = (data) => {
 
-        console.log(data)
-
         // the selected fields
         const header = ['sampleName', 'sliceNr', 'sequence', 'aminoAcidBefore', 'aminoAcidAfter', 'startPos', 'endPos', 'log2ratio', 'molWeight', 'molWeight', 'ratioCount']
 

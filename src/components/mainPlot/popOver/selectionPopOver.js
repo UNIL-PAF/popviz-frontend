@@ -14,24 +14,36 @@ class SelectionPopOver extends Component {
 
     render() {
 
-        const {finalSelectionRect, mouseOverPepIds, filteredPepList} = this.props;
+        const {finalSelectionRect, mouseOverPepIds, filteredPepList, selectedSamples} = this.props;
 
         // get the peptides with the selected id
         const peps = filteredPepList.filter( (p) => {
             return mouseOverPepIds.indexOf(p.id) > -1
         })
 
-        const content = {
-            'Selected peptides': mouseOverPepIds.length,
-            'Mean mol weight' : (Math.pow(10, _.meanBy(peps, 'molWeight'))).toFixed(1) + ' kDa'
+        var content = {
+            'Selected peptides': mouseOverPepIds.length
         }
 
-        // onCloseCb={this.props.actions.remove}
+        // add the means per sample
+        const sampleMeans = selectedSamples.map( (sampleName) => {
+            const samplePeps = peps.filter( (p) => {
+                return p.sampleName === sampleName
+            })
+
+            return { name: 'Mean ' + sampleName, value: (Math.pow(10, _.meanBy(samplePeps, 'molWeight')))}
+        })
+
+        sampleMeans.forEach( (s) => {
+          content[s.name] = s.value.toFixed(1) + ' kDa'
+        })
+
+        content['Mean of all means'] = _.meanBy(sampleMeans, 'value').toFixed(1) + ' kDa'
 
         const x = finalSelectionRect.endX + 10
         const y = finalSelectionRect.startY + 10
         const width = 140
-        const height = 60
+        const height = 50 + selectedSamples.length * 10
 
         // settings for the 'copy to clipboard' button
         const buttonWidth = 73
@@ -53,14 +65,16 @@ class SelectionPopOver extends Component {
 SelectionPopOver.propTypes = {
     mouseOverPepIds: PropTypes.array.isRequired,
     finalSelectionRect: PropTypes.object.isRequired,
-    filteredPepList: PropTypes.array.isRequired
+    filteredPepList: PropTypes.array.isRequired,
+    selectedSamples: PropTypes.array.isRequired
 }
 
 function mapStateToProps(state) {
     const props = {
         mouseOverPepIds: state.plotReducer.mouseOverPepIds,
         finalSelectionRect: state.plotReducer.finalSelectionRect,
-        filteredPepList: state.plotReducer.filteredPepList
+        filteredPepList: state.plotReducer.filteredPepList,
+        selectedSamples: state.plotReducer.selectedSamples
     };
 
     return props;
