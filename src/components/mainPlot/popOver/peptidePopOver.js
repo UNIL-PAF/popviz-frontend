@@ -35,7 +35,7 @@ class PeptidePopOver extends Component {
             'End pos': pepInfo.endPos,
             'Mol weight': Math.pow(10, pepInfo.molWeight).toFixed(2) + ' kDa',
             'H/L Ratio (log2)': pepInfo.log2ratio.toFixed(2),
-            'Count': pepInfo.ratioCount
+            'H/L Ratio count': pepInfo.ratioCount
         }
 
         return (

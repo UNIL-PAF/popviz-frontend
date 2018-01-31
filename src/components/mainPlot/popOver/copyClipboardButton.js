@@ -6,8 +6,11 @@ import PropTypes from 'prop-types';
 class CopyClipboardButton extends Component {
 
     objectToTableString = (data) => {
+
+        console.log(data)
+
         // the selected fields
-        const header = ['sampleName', 'sliceNr', 'sequence', 'aminoAcidBefore', 'aminoAcidAfter', 'startPos', 'endPos', 'molWeight', 'log2ratio']
+        const header = ['sampleName', 'sliceNr', 'sequence', 'aminoAcidBefore', 'aminoAcidAfter', 'startPos', 'endPos', 'log2ratio', 'molWeight', 'molWeight', 'ratioCount']
 
         // separator and newlines
         const sep = "\t"
@@ -15,15 +18,21 @@ class CopyClipboardButton extends Component {
 
         // transform the data to string
         const sArr = data.map( (o) => {
-            const one = header.map( (h) => {
+            var one = header.map( (h) => {
                 return o[h];
             })
+            // compute MolWeigth in kDa
+            one[9] = Math.pow(10, one[9])
+
             return one.join(sep)
         })
 
         // the header used to create the table
         var finalHeader = header
-        finalHeader[7] = "log10molWeight"
+        finalHeader[7] = "H.L.ratio.log2"
+        finalHeader[8] = "molWeight.log10"
+        finalHeader[9] = "molWeight.kDa"
+        finalHeader[10] = "H.L.ratio.count"
 
         return finalHeader.join(sep) + nlSep + sArr.join(nlSep)
     }
