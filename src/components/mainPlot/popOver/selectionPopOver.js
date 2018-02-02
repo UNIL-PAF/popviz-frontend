@@ -44,10 +44,15 @@ class SelectionPopOver extends Component {
 
         content['Mean of all means'] = _.meanBy(sampleMeans, 'value').toFixed(1) + ' kDa'
 
+        const pepMolWeights = peps.map( (p) => {
+          return Math.pow(10, p['molWeight'])
+        })
+        content['Total mean'] = _.mean(pepMolWeights).toFixed(1) + ' kDa'
+
         const x = finalSelectionRect.endX + 10
         const y = finalSelectionRect.startY + 10
         const width = 140
-        const height = 50 + selectedSamples.length * 10
+        const height = 60 + selectedSamples.length * 10
 
         // settings for the 'copy to clipboard' button
         const buttonWidth = 73
