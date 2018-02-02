@@ -404,8 +404,8 @@ function mapStateToProps(state) {
         highlightPepSeq: state.plotReducer.highlightPepSeq,
         filteredPepSeqs: state.plotReducer.filteredPepSeqs,
         selectedSamples: state.plotReducer.selectedSamples,
-        shiftPressedDown: state.plotReducer.shiftPressedDown,
-        shiftAndMouseDown: state.plotReducer.shiftAndMouseDown,
+        shiftPressedDown: state.controlReducer.shiftPressedDown,
+        shiftAndMouseDown: state.controlReducer.shiftAndMouseDown,
         selectionRect: state.plotReducer.selectionRect,
         finalSelectionRect: state.plotReducer.finalSelectionRect
     };

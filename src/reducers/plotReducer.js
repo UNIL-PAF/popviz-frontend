@@ -9,8 +9,6 @@ import {
     CLICK_ON_PEP,
     REMOVE_POPOVER,
     FILTER_PSMS,
-    SHIFT_PRESSED_DOWN,
-    SHIFT_AND_MOUSE_DOWN,
     CHANGE_SELECTION_RECT,
     FINAL_SELECTION,
     REMOVE_FINAL_SELECTION
@@ -39,8 +37,6 @@ const defaultState = {
     openPopovers: [],
     openPopoversId: [],
     filters: [],
-    shiftPressedDown: false,
-    shiftAndMouseDown: false,
     selectionRect: null,
     selectionRectMeasures: null
 };
@@ -289,18 +285,6 @@ export default function changePlot(state = defaultState, action = null) {
               mouseOverPepIds: findPepIds(action.sampleName, action.sequence, state.filteredPepList),
               highlightPepSeq: null,
               finalSelectionRect: null
-          }
-
-      case SHIFT_PRESSED_DOWN:
-          return {
-              ...state,
-              shiftPressedDown: action.isDown,
-              shiftAndMouseDown: !action.isDown ? action.isDown : state.shiftAndMouseDown
-          }
-      case SHIFT_AND_MOUSE_DOWN:
-          return {
-              ...state,
-              shiftAndMouseDown: action.isDown
           }
       case CHANGE_SELECTION_RECT:
           var selRect = {

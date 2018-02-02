@@ -1,8 +1,13 @@
-import { LOAD_PROTEIN, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION, STOP_LOADING_PROTEIN } from '../actions/const'
+import {
+    LOAD_PROTEIN, PROTEIN_IS_LOADED, CHANGE_SAMPLE_SELECTION, STOP_LOADING_PROTEIN,
+    SHIFT_AND_MOUSE_DOWN, SHIFT_PRESSED_DOWN
+} from '../actions/const'
 
 const defaultState = {
     proteinAC: 'P02786',
-    isLoading: false
+    isLoading: false,
+    shiftPressedDown: false,
+    shiftAndMouseDown: false
 };
 
 export default function reduceControlActions(state = defaultState, action = null) {
@@ -28,6 +33,17 @@ export default function reduceControlActions(state = defaultState, action = null
           return{
               ...state,
               sampleSelection: action.sampleSelection
+          }
+      case SHIFT_PRESSED_DOWN:
+          return {
+              ...state,
+              shiftPressedDown: action.isDown,
+              shiftAndMouseDown: !action.isDown ? action.isDown : state.shiftAndMouseDown
+          }
+      case SHIFT_AND_MOUSE_DOWN:
+          return {
+              ...state,
+              shiftAndMouseDown: action.isDown
           }
     default:
       return state
