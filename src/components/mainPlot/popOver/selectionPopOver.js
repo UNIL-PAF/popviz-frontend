@@ -31,7 +31,11 @@ class SelectionPopOver extends Component {
                 return p.sampleName === sampleName
             })
 
-            return { name: 'Mean ' + sampleName, value: (Math.pow(10, _.meanBy(samplePeps, 'molWeight')))}
+            const molWeightsKda = _.map(samplePeps, (s) => {
+                return Math.pow(10, s['molWeight'])
+            })
+
+            return { name: 'Mean ' + sampleName, value: _.meanBy(molWeightsKda) }
         })
 
         sampleMeans.forEach( (s) => {
