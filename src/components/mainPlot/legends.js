@@ -13,7 +13,7 @@ const defaultFontSize = "6px"
 class Legends extends Component {
 
     render() {
-        const { width, height, sampleSelection, mouseOverSequence } = this.props;
+        const { width, height, sampleSelection, mouseOverSequence, protein } = this.props;
 
         const plotRatioLegendGradient = () => {
             return   <linearGradient id="ratio-gradient" x1="0" x2="0" y1="0" y2="1">
@@ -49,8 +49,11 @@ class Legends extends Component {
         }
 
         const plotTheoWeightLegend = (x, y) => {
+
+            const molWeight = protein ? '(' + protein.theoMolWeight.toFixed(1) + ' kDa)' : ''
+
             return <g>
-                <text x={x} y={y} fontFamily="sans-serif" fontSize={titleFontSize}>Theo prot weight</text>
+                <text x={x} y={y} fontFamily="sans-serif" fontSize={titleFontSize}>Theo prot weight {molWeight}</text>
                 <line
                     className="theo-prot-weight"
                     x1={x}
@@ -124,13 +127,15 @@ Legends.propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     sampleSelection: PropTypes.array.isRequired,
-    mouseOverSequence: PropTypes.object
+    mouseOverSequence: PropTypes.object,
+    protein: PropTypes.object
 };
 
 function mapStateToProps(state) {
     const props = {
         sampleSelection: state.plotReducer.sampleSelection,
-        mouseOverSequence: state.plotReducer.mouseOverSequence
+        mouseOverSequence: state.plotReducer.mouseOverSequence,
+        protein: state.plotReducer.protein
     };
 
     return props;
