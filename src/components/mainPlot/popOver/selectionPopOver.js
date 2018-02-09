@@ -39,10 +39,11 @@ class SelectionPopOver extends Component {
         })
 
         sampleMeans.forEach( (s) => {
-          content[s.name] = s.value.toFixed(1) + ' kDa'
+          content[s.name] = isNaN(s.value) ? '-' : (s.value.toFixed(1) + ' kDa')
         })
 
-        content['Mean of all means'] = _.meanBy(sampleMeans, 'value').toFixed(1) + ' kDa'
+        const meanOfMeans = _.meanBy(sampleMeans, 'value').toFixed(1)
+        content['Mean of all means'] = isNaN(meanOfMeans) ? '-' : meanOfMeans + ' kDa'
 
         const pepMolWeights = peps.map( (p) => {
           return Math.pow(10, p['molWeight'])
