@@ -5,7 +5,7 @@
 
 var config = {};
 
-config.version = '1.0.9'
+config.version = '1.0.10'
 
 config.urlBackend = "https://popviz.vital-it.ch/slimp/public"
 //config.urlBackend = "http://localhost:3001"
