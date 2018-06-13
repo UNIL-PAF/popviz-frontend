@@ -323,7 +323,6 @@ class SliceSilacPlot extends Component {
         }
 
         const plotCleavages = (cleavages) => {
-            console.log(cleavages)
             return cleavages.map((p, i) => {
               return <Cleavage
                   xPos={p.pos}

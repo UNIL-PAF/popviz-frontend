@@ -12,8 +12,9 @@ class Cleavage extends Component {
             d="M10,17.5L3.5,11H7V3h6v8h3.5L10,17.5z"
             transform={"translate(" + (xScale(xPos + 0.5) - 10) + "," + yPos + ")"}
             fill={"red"}
-            strokeWidth={1}
+            strokeWidth={0.5}
             stroke={"black"}
+            fillOpacity={0.5}
         />
 
     }
