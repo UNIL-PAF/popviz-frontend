@@ -266,3 +266,7 @@ peptide-pop-over.shadow {
 .peptide-pop-over-close:hover{
     cursor: pointer;
 }
+
+.center-column{
+    text-align: center;
+}

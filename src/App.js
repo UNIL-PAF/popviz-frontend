@@ -10,6 +10,7 @@ import SliceSilacPlot from './components/mainPlot/sliceSilacPlot'
 import ProteinTitle from './components/mainPlot/proteinTitle'
 import Legends from './components/mainPlot/legends'
 import FilterPeptides from './components/plotControls/filterPeptides'
+import CleavageTable from './components/cleavageTable/cleavageTable'
 import popVizConfig from './config'
 
 class App extends Component {
@@ -51,9 +52,11 @@ class App extends Component {
                 <SliceSilacPlot width={800} height={300}/>
             </Col>
             <Col md={2} className="pull-left">
-                <Legends width={112} height={300}/>
+                <Legends width={112} height={140}/>
             </Col>
         </Row>
+
+        <CleavageTable></CleavageTable>
 
       </div>
     );

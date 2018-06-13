@@ -4,14 +4,15 @@ import {
     CHANGE_ZOOM_RANGE,
     MOUSE_OVER_PEP,
     PROTEIN_IS_LOADED,
-    CHANGE_SAMPLE_SELECTION ,
+    CHANGE_SAMPLE_SELECTION,
     MOUSE_OVER_SEQUENCE,
     CLICK_ON_PEP,
     REMOVE_POPOVER,
     FILTER_PSMS,
     CHANGE_SELECTION_RECT,
     FINAL_SELECTION,
-    REMOVE_FINAL_SELECTION
+    REMOVE_FINAL_SELECTION,
+    TOGGLE_CLEAVAGE
 } from '../actions/const'
 
 const defaultState = {
@@ -38,7 +39,8 @@ const defaultState = {
     openPopoversId: [],
     filters: [],
     selectionRect: null,
-    selectionRectMeasures: null
+    selectionRectMeasures: null,
+    cleavages: []
 };
 
 export default function changePlot(state = defaultState, action = null) {
@@ -343,6 +345,13 @@ export default function changePlot(state = defaultState, action = null) {
               selectionRect: null,
               selectionRectMeasures: null,
               mouseOverPepIds: null
+          }
+      case TOGGLE_CLEAVAGE:
+          return {
+              ...state,
+              cleavages:    _.some(state.cleavages, action.cleavage) ?
+                            _.filter(state.cleavages, function(x){ return x.index !== action.cleavage.index }) :
+                            state.cleavages.concat(action.cleavage)
           }
 
     default:

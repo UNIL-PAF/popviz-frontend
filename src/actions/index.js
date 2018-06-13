@@ -68,3 +68,7 @@ export function finalSelection(selectionRect){
 export function removeFinalSelection(){
     return { type: types.REMOVE_FINAL_SELECTION }
 }
+
+export function toggleCleavage(cleavage){
+    return { type: types.TOGGLE_CLEAVAGE, cleavage: cleavage }
+}

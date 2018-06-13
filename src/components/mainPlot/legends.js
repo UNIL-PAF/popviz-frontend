@@ -114,7 +114,13 @@ class Legends extends Component {
 
         }
 
-        return <svg className="legends-svg" viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
+        // add the additionalHeight according to the number of selected samples
+        const additionalHeight = (_.filter(sampleSelection, function(x) { return x.selected; })).length * 15
+
+        return <svg className="legends-svg"
+                    viewBox={`0 0 ${width} ${height + additionalHeight}`}
+                    width="100%"
+                    height="100%">
                     { plotRatioLegend(0,10,50) }
                     { plotTheoWeightLegend(0, 100) }
                     { plotSelectedSamples(0, 142, sampleSelection)}

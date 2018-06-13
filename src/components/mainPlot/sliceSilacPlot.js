@@ -37,7 +37,7 @@ class SliceSilacPlot extends Component {
     proteinAC = undefined
 
     // set the margins
-    margin = {top: 5, right: 10, bottom: 100, left: 40};
+    margin = {top: 5, right: 10, bottom: 30, left: 40};
 
     brushend = () => {
         var s = d3.event.selection;
@@ -327,7 +327,7 @@ class SliceSilacPlot extends Component {
             // adapt the viewPort height by calling the callback from sliceSilacPlot
             // we only have to adapt if the maxShift is > 7
             const maxShift = (aaShiftArray.length) ? _.max(aaShiftArray) : 0
-            const additionalHeight = (maxShift > 7) ? ((maxShift - 7) * 11) : 0
+            const additionalHeight = maxShift ? (maxShift * 11) : 0
 
             return <div>
                 <svg className="slice-silac-svg"
@@ -391,6 +391,7 @@ SliceSilacPlot.propTypes = {
 };
 
 function mapStateToProps(state) {
+    console.log(state.cleavages)
     const props = {
         zoomLeft: state.plotReducer.zoomLeft,
         zoomRight: state.plotReducer.zoomRight,
