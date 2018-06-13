@@ -233,7 +233,8 @@ export default function changePlot(state = defaultState, action = null) {
               zoomLeft: undefined,
               zoomRight: undefined,
               finalSelectionRect: null,
-              mouseOverPepIds: null
+              mouseOverPepIds: null,
+              cleavages: []
           }
       case CHANGE_SAMPLE_SELECTION:
           const selectedSamples2 = computeSelectedSamples(action.sampleSelection)
@@ -350,7 +351,7 @@ export default function changePlot(state = defaultState, action = null) {
           return {
               ...state,
               cleavages:    _.some(state.cleavages, action.cleavage) ?
-                            _.filter(state.cleavages, function(x){ return x.index !== action.cleavage.index }) :
+                            _.filter(state.cleavages, function(x){ return x.pos !== action.cleavage.pos }) :
                             state.cleavages.concat(action.cleavage)
           }
 

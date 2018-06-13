@@ -79,24 +79,26 @@ class CleavageTable extends Component {
                                 ]}
                                 className = "-striped -highlight"
                                 showPagination = {false}
+                                defaultPageSize={protein.cleavages.length}
                                 getTrProps={(state, rowInfo) => {
+                                    const rowId = rowInfo ? rowInfo.original.pos : undefined
+
                                     return {
                                         onClick: (e) => {
-                                            console.log('got clicked: ', rowInfo)
                                             // remove if row was already selected otherwise add it
-                                            const newSelected = this.state.selected.includes(rowInfo.index) ?
-                                                _.filter(this.state.selected, function(x) { return x !== rowInfo.index} ) :
-                                                this.state.selected.concat(rowInfo.index);
+                                            const newSelected = this.state.selected.includes(rowId) ?
+                                                _.filter(this.state.selected, function(x) { return x !== rowId} ) :
+                                                this.state.selected.concat(rowId);
 
                                             this.setState({
                                                 selected: newSelected
                                             })
 
-                                            this.props.actions.toggleCleavage(rowInfo)
+                                            this.props.actions.toggleCleavage(rowInfo.original)
                                         },
                                         style: {
-                                            background: this.state.selected.includes(rowInfo.index) ? '#00afec' : undefined,
-                                            color: this.state.selected.includes(rowInfo.index) ? 'white' : undefined
+                                            background: this.state.selected.includes(rowId) ? '#00afec' : undefined,
+                                            color: this.state.selected.includes(rowId) ? 'white' : undefined
                                         }
 
                                     }

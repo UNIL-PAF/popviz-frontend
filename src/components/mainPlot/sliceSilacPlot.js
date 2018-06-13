@@ -20,6 +20,7 @@ import AminoAcidBar from './aminoAcidBar'
 import PeptideAaSequences from './peptideAaSequences'
 import TheoProtWeight from './theoProtWeight'
 import SelectionRect from './selectionRect'
+import Cleavage from './cleavage'
 
 class SliceSilacPlot extends Component {
 
@@ -143,7 +144,8 @@ class SliceSilacPlot extends Component {
             filteredPepSeqs,
             shiftPressedDown,
             selectionRect,
-            finalSelectionRect
+            finalSelectionRect,
+            cleavages
         } = this.props;
 
         // create an array with entries for every AA position
@@ -320,8 +322,20 @@ class SliceSilacPlot extends Component {
             });
         }
 
+        const plotCleavages = (cleavages) => {
+            console.log(cleavages)
+            return cleavages.map((p, i) => {
+              return <Cleavage
+                  xPos={p.pos}
+                  xScale={this.state.xScale}
+                  yPos={height - this.margin.bottom }
+                  key={"cleavage-" + i}
+              />
+            })
+        }
 
-        const mainPlot = (shiftPressedDown, selectionRect, finalSelectionRect) => {
+
+        const mainPlot = (shiftPressedDown, selectionRect, finalSelectionRect, cleavages) => {
             const plotContent = protein ? plotContentGenerator() : null
 
             // adapt the viewPort height by calling the callback from sliceSilacPlot
@@ -345,6 +359,7 @@ class SliceSilacPlot extends Component {
                        transform={'translate(' + this.margin.left + ',' + this.margin.top + ')'}/> }
                     <g className="main-g" transform={'translate(' + this.margin.left + ',' + this.margin.top + ')'}>
                         { plotContent }
+                        { cleavages.length > 0 && plotCleavages(cleavages) }
                     </g>
                     { finalSelectionRect &&
                     <g>
@@ -362,7 +377,7 @@ class SliceSilacPlot extends Component {
         }
 
         return (
-            mainPlot(shiftPressedDown, selectionRect, finalSelectionRect)
+            mainPlot(shiftPressedDown, selectionRect, finalSelectionRect, cleavages )
         )
 
     }
@@ -387,11 +402,11 @@ SliceSilacPlot.propTypes = {
     shiftPressedDown: PropTypes.bool,
     shiftAndMouseDown: PropTypes.bool,
     selectionRect: PropTypes.object,
-    finalSelectionRect: PropTypes.object
+    finalSelectionRect: PropTypes.object,
+    cleavages: PropTypes.array
 };
 
 function mapStateToProps(state) {
-    console.log(state.cleavages)
     const props = {
         zoomLeft: state.plotReducer.zoomLeft,
         zoomRight: state.plotReducer.zoomRight,
@@ -408,7 +423,8 @@ function mapStateToProps(state) {
         shiftPressedDown: state.controlReducer.shiftPressedDown,
         shiftAndMouseDown: state.controlReducer.shiftAndMouseDown,
         selectionRect: state.plotReducer.selectionRect,
-        finalSelectionRect: state.plotReducer.finalSelectionRect
+        finalSelectionRect: state.plotReducer.finalSelectionRect,
+        cleavages: state.plotReducer.cleavages
     };
 
     return props;
