@@ -111,7 +111,6 @@ function mapStateToProps(state) {
     const props = {
         sampleSelection: state.plotReducer.sampleSelection
     };
-
     return props;
 }
 

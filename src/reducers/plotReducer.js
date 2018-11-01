@@ -26,11 +26,15 @@ const defaultState = {
         {sampleName: '9053', selected: false, description: 'U2OS 4uM'},
         {sampleName: '8968', selected: false, description: 'U2OS 32uM'},
         {sampleName: '9508', selected: false, description: 'U2OS 32uM'},
+        {sampleName: '10590', selected: false, description: 'U2OS 32uM'},
         {sampleName: '9062', selected: true, description: 'HCT 2uM'},
         {sampleName: '9063', selected: true, description: 'HCT 2uM'},
         {sampleName: '9064', selected: true, description: 'HCT 2uM'},
         {sampleName: '8987', selected: false, description: 'HCT 32uM'},
-        {sampleName: '9507', selected: false, description: 'HCT 32uM'}
+        {sampleName: '9507', selected: false, description: 'HCT 32uM'},
+        {sampleName: '10591', selected: false, description: 'HCT 32uM'},
+        {sampleName: '10643', selected: false, description: 'HCT 32uM'},
+
     ],
     protein: null,
     filteredPepList: null,
