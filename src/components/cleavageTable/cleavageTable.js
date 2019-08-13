@@ -25,6 +25,10 @@ class CleavageTable extends Component {
         const plotTable = () => {
 
             if(protein && protein.cleavages){
+
+                // sort the cleavages by position
+                const sortedCleavages = _.sortBy(protein.cleavages, 'pos')
+
                 return (
                     <div>
                         <Row>
@@ -36,7 +40,7 @@ class CleavageTable extends Component {
                             <Col md={1}></Col>
                             <Col md={10}>
                             <ReactTable
-                                data = {protein.cleavages}
+                                data = {sortedCleavages}
                                 columns = {[
                                     {
                                         Header: "Position",
@@ -69,6 +73,16 @@ class CleavageTable extends Component {
                                     {
                                         Header: "Signal peptide",
                                         accessor: "signalPep",
+                                        maxWidth: 100,
+                                        className: "center-column",
+                                        Cell: row => (
+                                            row.value ? <span className="glyphicon glyphicon-ok"
+                                                              style={{"color":"green"}}></span> : <span></span>
+                                        )
+                                    },
+                                    {
+                                        Header: "Confirmed",
+                                        accessor: "confirmed",
                                         maxWidth: 100,
                                         className: "center-column",
                                         Cell: row => (

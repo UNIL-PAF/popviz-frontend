@@ -47,9 +47,19 @@ class SelectSamples extends Component {
             const desc = _.map(sampleSelection, 'description')
             const uniqDesc = _.uniq(desc)
 
-            return uniqDesc.map( d => {
+            const opts =  uniqDesc.map( d => {
                 return <option key={d} value={d}>{d}</option>
             })
+
+            console.log(opts)
+            const otherOpts = [
+                <option key={"all"} value={"all"}>All</option>,
+                <option key={"U2OS"} value={"U2OS"}>All U2OS</option>,
+                <option key={"HCT"} value={"HCT"}>All HCT</option>,
+            ]
+            const allOpts = otherOpts.concat(opts)
+
+            return allOpts
         }
 
         const renderSourceSelectionDropdown = () => {

@@ -24,6 +24,20 @@ class LoadProteinInputs extends Component {
         }
     }
 
+    componentDidMount(){
+        // in case there is a path "protein" provided we parse the protein from there
+        if(window.location.pathname.includes("protein")){
+            const ac = this.parseUrlPath(window.location.pathname)
+            this.props.actions.loadProtein(ac);
+        }
+    }
+
+    parseUrlPath = path => {
+        const rexp = /.+protein\/(.+)$/
+        const a = rexp.exec(path)
+        return a[1]
+    }
+
     setSuggestions = value => {
         //const valHead = (value.length > 100) ? value.slice(0, 100) : value
 
@@ -66,6 +80,9 @@ class LoadProteinInputs extends Component {
 
     onLoadProtein = e => {
         this.props.actions.loadProtein(this.state.value);
+
+        // set the URL to the new protein
+        window.location.pathname = "/protein/" + this.state.value
     }
 
     onSuggestionsFetchRequested = ({ value }) => {
@@ -87,6 +104,9 @@ class LoadProteinInputs extends Component {
     // load the suggested
     onSuggestionSelected = (e, {suggestionValue}) => {
         this.props.actions.loadProtein(suggestionValue)
+
+        // set the URL to the new protein
+        window.location.pathname = "/protein/" + suggestionValue
     }
 
     renderInputComponent = inputProps => (
