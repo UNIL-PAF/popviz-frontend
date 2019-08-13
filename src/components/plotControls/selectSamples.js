@@ -34,6 +34,14 @@ class SelectSamples extends Component {
         var origSampleSelection = this.props.sampleSelection;
 
         var newSampleSelection = origSampleSelection.map((ss) => {
+            // if "All" is selected everything gets selected
+            if(e.target.value === "all") return {...ss, selected: true}
+
+            // in case we want to select all U2OS or all HCT
+            if(e.target.value === "U2OS") return ss.description.includes("U2OS") ? {...ss, selected: true} : {...ss, selected: false}
+            if(e.target.value === "HCT") return ss.description.includes("HCT") ? {...ss, selected: true} : {...ss, selected: false}
+
+            // in case we're looking at subgroups as sset in "description"
             return ss.description === e.target.value ? {...ss, selected: true} : {...ss, selected: false};
         })
 
@@ -51,7 +59,6 @@ class SelectSamples extends Component {
                 return <option key={d} value={d}>{d}</option>
             })
 
-            console.log(opts)
             const otherOpts = [
                 <option key={"all"} value={"all"}>All</option>,
                 <option key={"U2OS"} value={"U2OS"}>All U2OS</option>,
