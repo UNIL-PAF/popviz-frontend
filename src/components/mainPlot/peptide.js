@@ -2,8 +2,7 @@ import React, {
     Component,
 } from 'react';
 import PropTypes from 'prop-types';
-import * as d3 from 'd3';
-import { select } from 'd3-selection';
+import { select, mouse } from 'd3-selection';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -54,7 +53,7 @@ class Peptide extends Component {
 
         // this event we have to call using D3 in order to get the mouse position correctly
         select(this.rectDom).on('mouseenter', () => {
-            const [x,y] = d3.mouse(svgParent)
+            const [x,y] = mouse(svgParent)
             this.props.actions.mouseOverPep(this.rectDom.id, x, y)
         })
 
@@ -63,7 +62,7 @@ class Peptide extends Component {
         })
 
         select(this.rectDom).on('click', () => {
-            const [x,y] = d3.mouse(svgParent)
+            const [x,y] = mouse(svgParent)
             this.props.actions.clickOnPep(this.rectDom.id, x, y)
         })
     }

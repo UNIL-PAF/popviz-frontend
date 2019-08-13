@@ -3,10 +3,9 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { scaleLinear } from 'd3-scale';
-import { select } from 'd3-selection';
+import { select, event, mouse } from 'd3-selection';
 import { brushX } from 'd3-brush';
 import { axisLeft, axisBottom } from 'd3-axis';
-import * as d3 from 'd3';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as ControlActions from '../../actions'
@@ -41,7 +40,7 @@ class SliceSilacPlot extends Component {
     margin = {top: 5, right: 10, bottom: 30, left: 40};
 
     brushend = () => {
-        var s = d3.event.selection;
+        var s = event.selection;
         if(s){
             const newDomain = s.map(this.state.xScale.invert, this.state.xScale);
             this.props.actions.changeZoomRange(newDomain[0], newDomain[1]);
@@ -79,7 +78,7 @@ class SliceSilacPlot extends Component {
         // Otherwise we have the brushX zoom
         if(shiftAndMouseDown){
             this.backgroundRect.on('mousemove', () => {
-                const [x,y] = d3.mouse(this.svg)
+                const [x,y] = mouse(this.svg)
                 const xWithoutMargin = x - this.margin.left
                 const yWithoutMargin = y - this.margin.top
                 this.props.actions.changeSelectionRect(x, y, this.state.xScale.invert(xWithoutMargin), this.state.yScale.invert(yWithoutMargin))
