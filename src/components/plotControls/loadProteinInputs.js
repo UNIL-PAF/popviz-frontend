@@ -79,13 +79,13 @@ class LoadProteinInputs extends Component {
         const {value} = this.state
 
         const lcVal = this.state.value.toLowerCase()
-        const fastaString = suggestion.fastaHeaders
+        const fastaString = suggestion.searchTerm
         const lcFastaString = fastaString.toLowerCase()
         const hitPos = lcFastaString.indexOf(lcVal)
         const highlightedString = <span>{fastaString.slice(0,hitPos)}<strong><em>{fastaString.slice(hitPos, hitPos+value.length)}</em></strong>{fastaString.slice(hitPos + value.length - fastaString.length)}</span>
 
         return <div>
-            <strong>{suggestion.proteinAC}:</strong>&nbsp;{highlightedString}
+            {highlightedString}
         </div>
     }
 

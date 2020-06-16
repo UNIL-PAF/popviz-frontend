@@ -34,6 +34,10 @@ const defaultState = {
         {sampleName: '9507', selected: true, description: 'HCT 32uM'},
         {sampleName: '10591', selected: true, description: 'HCT 32uM'},
         {sampleName: '10643', selected: true, description: 'HCT 32uM'},
+        {sampleName: '11116', selected: true, description: 'HCT 32uM'},
+        {sampleName: '10960', selected: true, description: 'DKO 2uM'},
+        {sampleName: '10961', selected: true, description: 'DKO 2uM'},
+        {sampleName: '10962', selected: true, description: 'DKO 2uM'},
 
     ],
     protein: null,
