@@ -38,8 +38,8 @@ class SelectSamples extends Component {
             if(e.target.value === "all") return {...ss, selected: true}
 
             // in case we want to select all U2OS or all HCT
-            if(e.target.value === "high") return ss.description.includes("32uM") ? {...ss, selected: true} : {...ss, selected: false}
-            if(e.target.value === "low") return !ss.description.includes("32uM") ? {...ss, selected: true} : {...ss, selected: false}
+            if(e.target.value === "high") return ss.description.includes("32 uM") ? {...ss, selected: true} : {...ss, selected: false}
+            if(e.target.value === "low") return !ss.description.includes("32 uM") ? {...ss, selected: true} : {...ss, selected: false}
 
             // in case we're looking at subgroups as sset in "description"
             return ss.description === e.target.value ? {...ss, selected: true} : {...ss, selected: false};
