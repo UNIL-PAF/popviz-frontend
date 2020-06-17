@@ -10,8 +10,6 @@ class ProteinTitle extends Component {
     render() {
         const { protein } = this.props;
 
-        console.log(protein)
-
         const plotAlternativeProteins = () => {
             const loopAltProts = (altProts) => {
                 return altProts.map( (p,i) => {

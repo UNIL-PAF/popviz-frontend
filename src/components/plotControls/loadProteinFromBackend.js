@@ -104,6 +104,16 @@ let loadFastaFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB, data)
                     return s
                 })
 
+                // take the theoretical weight from the fasta if it is not the first protein
+                if(proteinAC !== data.proteinAC){
+                    data.theoMolWeight = fasta.theoMolWeight
+                    data.theoMolWeightLog10 = fasta.theoMolWeightLog10
+
+                    // set the new proteinAC and geneName
+                    data.proteinAC = proteinAC
+                    data.geneName = data.alternativeGeneNames[data.alternativeProteinACs.findIndex((pac) => {return proteinAC === pac})]
+                }
+
                 proteinLoadedCB(data);
             }
         });
