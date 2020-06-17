@@ -13,7 +13,8 @@ class ProteinTitle extends Component {
         const plotAlternativeProteins = () => {
             const loopAltProts = (altProts) => {
                 return altProts.map( (p,i) => {
-                    return <span key={i}>{p}  <em>({protein.alternativeGeneNames[i]})</em>&nbsp;</span>
+                    const altGeneName = protein.alternativeGeneNames[i] ? "(" + protein.alternativeGeneNames[i] + ")" : ""
+                    return <span key={i}>{p}  <em>{altGeneName}</em>&nbsp;</span>
                 })
             }
 
@@ -33,9 +34,11 @@ class ProteinTitle extends Component {
         }
 
         const plotTitle = () => {
+            const geneName = protein.geneName ? "(" + protein.geneName + ")" : ""
+
             return <Row>
                 <Col md={3} className="text-center">
-                    <h4 float="left"><strong>{protein.proteinAC} <em>({protein.geneName})</em></strong></h4>
+                    <h4 float="left"><strong>{protein.proteinAC} <em>{geneName}</em></strong></h4>
                 </Col>
                 { protein.alternativeProteinACs.length > 0 && plotAlternativeProteins()}
                 { plotDescription(protein.alternativeProteinACs.length > 0) }
