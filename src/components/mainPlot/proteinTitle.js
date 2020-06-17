@@ -10,6 +10,8 @@ class ProteinTitle extends Component {
     render() {
         const { protein } = this.props;
 
+        console.log(protein)
+
         const plotAlternativeProteins = () => {
             const loopAltProts = (altProts) => {
                 return altProts.map( (p,i) => {
@@ -19,7 +21,7 @@ class ProteinTitle extends Component {
 
             return <Col md={3}>
                 <h5>
-                    Other proteins: <strong>{loopAltProts(protein.alternativeProteinACs)}</strong>
+                    All proteins: <strong>{loopAltProts(protein.alternativeProteinACs)}</strong>
                 </h5>
             </Col>
         }
@@ -27,7 +29,7 @@ class ProteinTitle extends Component {
         const plotDescription = (hasAltProts) => {
             return <Col md={ hasAltProts ? 6 : 9 }>
                 <h5>
-                    Description: <strong>{protein.description}</strong>
+                    Descriptions: <strong>{protein.description}</strong>
                 </h5>
             </Col>
         }
