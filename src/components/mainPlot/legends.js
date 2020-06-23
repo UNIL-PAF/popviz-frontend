@@ -71,7 +71,7 @@ class Legends extends Component {
                 return <rect
                     x={x+1}
                     y={y-7}
-                    width={65}
+                    width={90}
                     height={radius + 6}
                     stroke="red"
                     strokeWidth={0.5}
