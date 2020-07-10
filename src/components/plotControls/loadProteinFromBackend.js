@@ -20,7 +20,6 @@ import * as _ from 'lodash';
             })
             .then(function(data) {
                 if(data){
-
                     if(proteinAC !== data.proteinAC) {
                         // in this case we remove the cleavages
                         delete data.cleavages
@@ -42,7 +41,7 @@ import * as _ from 'lodash';
                         data.peptides = filteredPeps
                     }
 
-                    loadFastaFromBackend(proteinAC, proteinLoadedCB, stopLoadingProtCB, data);
+                    loadDescripionsFromBackend(proteinAC, proteinLoadedCB, stopLoadingProtCB, data)
                 }
 
             });
@@ -71,7 +70,7 @@ let remapPeptides = (sequence, peptides, onlyUndefined) => {
     return _.filter(remappedPeps, (p) => {return p})
 }
 
-let loadFastaFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB, data) => {
+let loadFastaFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB, data, descriptions) => {
     fetch(urlBackend + `/fasta/` + proteinAC, {
         credentials: 'same-origin'
     })
@@ -108,13 +107,53 @@ let loadFastaFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB, data)
                 if(proteinAC !== data.proteinAC){
                     data.theoMolWeight = fasta.theoMolWeight
                     data.theoMolWeightLog10 = fasta.theoMolWeightLog10
-
-                    // set the new proteinAC and geneName
-                    data.proteinAC = proteinAC
-                    data.geneName = data.alternativeGeneNames[data.alternativeProteinACs.findIndex((pac) => {return proteinAC === pac})]
-                }
+                   }
 
                 proteinLoadedCB(data);
+            }
+        });
+}
+
+let loadDescripionsFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB, data) => {
+     const proteinACs = data.alternativeProteinACs.join(",")
+
+    fetch(urlBackend + `/descriptions/` + proteinACs, {
+        credentials: 'same-origin'
+    })
+        .then(function(response) {
+            if(response.status === 404){
+                alert('Description for proteins [' + proteinACs + '] was not found')
+                stopLoadingProtCB()
+                return null
+            }
+            else if (response.status >= 400) {
+                throw new Error("Bad response from server");
+            }
+            return response.json();
+        })
+        .then(function(desc) {
+            if(desc){
+                const descSorted = _.map(data.alternativeProteinACs, (p) => {
+                    const res = _.find(desc, (d) => {return d.ac === p})
+                    if(typeof res !== 'undefined'){
+                        res.selected = (res.ac === proteinAC) ? true : false
+                    }
+                    return res;
+                })
+
+                const descFlt = _.filter(descSorted, (d) => { return d})
+
+                data.descriptions = descFlt;
+
+                if(proteinAC !== data.proteinAC) {
+                    // set the new proteinAC and geneName
+                    data.proteinAC = proteinAC
+                    data.geneName = _.find(desc, (d) => {return d.ac === proteinAC}).gene_name
+                }
+
+                data.isBestHit = _.findIndex(descFlt, (d) => {return d.selected}) == 0
+
+                loadFastaFromBackend(proteinAC, proteinLoadedCB, stopLoadingProtCB, data);
             }
         });
 }

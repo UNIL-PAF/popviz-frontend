@@ -11,25 +11,41 @@ class ProteinTitle extends Component {
         const { protein } = this.props;
 
         const plotAlternativeProteins = () => {
-            const loopAltProts = (altProts) => {
-                return altProts.map( (p,i) => {
-                    const altGeneName = protein.alternativeGeneNames[i] ? "(" + protein.alternativeGeneNames[i] + ")" : ""
-                    return <span key={i}>{p}  <em>{altGeneName}</em>&nbsp;</span>
+
+            const loopAltProts = (desc) => {
+                const lengthCheck = desc.length - 1
+
+                return desc.map( (d,i) => {
+                    const geneName = (geneName) => {return (geneName ? <em>({geneName})</em> : '')}
+                    const acGene = () => {return <span>{d.ac}  {geneName(d.gene_name)}{i < lengthCheck ? ',' : ''}&nbsp;</span>}
+                    const res = (sel) => { return sel ? <strong>{acGene()}</strong> : acGene() }
+                    return <span key={i}>{res(d.selected)}</span>
                 })
             }
 
             return <Col md={3}>
-                <h5>
-                    All proteins: <strong>{loopAltProts(protein.alternativeProteinACs)}</strong>
-                </h5>
+                <div>
+                    <h4>All proteins:</h4> <h5>{loopAltProts(protein.descriptions)}</h5>
+                </div>
+                {! protein.isBestHit && <span style={{color: 'red'}}>Selected protein is not the best hit in this protein group.</span>}
             </Col>
+        }
+
+        const loopProteinNames = (desc) => {
+            const lengthCheck = desc.length - 1
+
+            return desc.map( (d,i) => {
+                const protName = () => {return <span>{d.protein_name}{i < lengthCheck ? ',' : ''}&nbsp;</span>}
+                const res = (sel) => { return sel ? <strong>{protName()}</strong> : protName() }
+                return <span key={i}>{res(d.selected)}</span>
+            })
         }
 
         const plotDescription = (hasAltProts) => {
             return <Col md={ hasAltProts ? 6 : 9 }>
-                <h5>
-                    Descriptions: <strong>{protein.description}</strong>
-                </h5>
+                <div>
+                    <h4>Descriptions:</h4> <h5>{loopProteinNames(protein.descriptions)}</h5>
+                </div>
             </Col>
         }
 
