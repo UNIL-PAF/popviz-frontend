@@ -151,7 +151,7 @@ let loadDescripionsFromBackend = (proteinAC, proteinLoadedCB, stopLoadingProtCB,
                     data.geneName = _.find(desc, (d) => {return d.ac === proteinAC}).gene_name
                 }
 
-                data.isBestHit = _.findIndex(descFlt, (d) => {return d.selected}) == 0
+                data.isBestHit = _.findIndex(descFlt, (d) => {return d.selected}) === 0
 
                 loadFastaFromBackend(proteinAC, proteinLoadedCB, stopLoadingProtCB, data);
             }
