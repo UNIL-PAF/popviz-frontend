@@ -1,7 +1,13 @@
+# PopViz frontend
+
+
 ## Description
 
-This is the frontend for the Slice silac visualization developed for the Department of Physiology UNIL.
+This is the frontend of [PopViz](https://popviz.vital-it.ch/) developed for the Department of Physiology at the University of Lausanne.
 It is based on D3.js and ReactJS.
+
+This application works with the following Slim/PHP application:
+https://github.com/UNIL-PAF/popviz-backend
 
 ----
 
